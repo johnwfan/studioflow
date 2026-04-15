@@ -1,11 +1,11 @@
 export default function Page() {
   return (
-    <div className="flex min-h-[calc(100vh-3rem)] items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+    <div className="placeholder-page">
+      <div className="placeholder-page__content">
+        <h1 className="placeholder-page__title">
           Coming soon
         </h1>
-        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="placeholder-page__description">
           This page is still under construction.
         </p>
       </div>

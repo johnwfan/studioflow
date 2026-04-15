@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   FolderKanban,
-  GitBranch,
   CalendarDays,
   Settings,
   Sparkles,
@@ -38,25 +37,25 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-72 flex-col border-r border-zinc-200 bg-white/80 px-4 py-4 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
-      <div className="mb-8 px-2">
-        <Link href="/dashboard" className="group inline-flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900">
-            <Sparkles className="h-5 w-5" />
+    <aside className="sidebar">
+      <div className="sidebar__brand">
+        <Link href="/dashboard" className="sidebar__brand-link">
+          <div className="sidebar__brand-icon">
+            <Sparkles className="sidebar__brand-mark" />
           </div>
 
           <div>
-            <p className="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+            <p className="sidebar__brand-name">
               Studioflow
             </p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="sidebar__brand-subtitle">
               creator workflow
             </p>
           </div>
         </Link>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1">
+      <nav className="sidebar__nav">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -67,18 +66,18 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               className={[
-                "group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition-all",
+                "sidebar__nav-link",
                 isActive
-                  ? "bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900"
-                  : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100",
+                  ? "sidebar__nav-link--active"
+                  : "sidebar__nav-link--inactive",
               ].join(" ")}
             >
               <Icon
                 className={[
-                  "h-4 w-4 shrink-0 transition-colors",
+                  "sidebar__nav-icon",
                   isActive
-                    ? "text-white dark:text-zinc-900"
-                    : "text-zinc-500 group-hover:text-zinc-900 dark:text-zinc-500 dark:group-hover:text-zinc-100",
+                    ? "sidebar__nav-icon--active"
+                    : "sidebar__nav-icon--inactive",
                 ].join(" ")}
               />
               <span>{item.label}</span>
@@ -87,11 +86,11 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-6 rounded-2xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-900">
-        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+      <div className="sidebar__workspace">
+        <p className="sidebar__workspace-title">
           personal workspace
         </p>
-        <p className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+        <p className="sidebar__workspace-description">
           plan, track, and ship your content in one place.
         </p>
       </div>

@@ -129,3 +129,241 @@
     @apply bg-background text-foreground font-sans;
   }
 }
+
+@layer components {
+  .app-shell {
+    @apply flex min-h-screen;
+  }
+
+  .app-shell__main {
+    @apply flex-1;
+  }
+
+  .placeholder-page {
+    @apply flex min-h-[calc(100vh-3rem)] items-center justify-center;
+  }
+
+  .placeholder-page__content {
+    @apply text-center;
+  }
+
+  .placeholder-page__title {
+    @apply text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100;
+  }
+
+  .placeholder-page__description {
+    @apply mt-2 text-sm text-zinc-500 dark:text-zinc-400;
+  }
+
+  .landing-page {
+    @apply min-h-screen bg-background text-foreground;
+  }
+
+  .landing-page__section {
+    @apply mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-6 text-center;
+  }
+
+  .landing-page__hero {
+    @apply max-w-3xl;
+  }
+
+  .landing-page__eyebrow {
+    @apply mb-4 text-sm font-medium tracking-wide text-muted-foreground;
+  }
+
+  .landing-page__title {
+    @apply text-5xl font-semibold tracking-tight sm:text-6xl;
+  }
+
+  .landing-page__title-line {
+    @apply block;
+  }
+
+  .landing-page__description {
+    @apply mx-auto mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg;
+  }
+
+  .landing-page__actions {
+    @apply mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row;
+  }
+
+  .landing-page__primary-action {
+    @apply inline-flex h-11 items-center justify-center rounded-2xl bg-foreground px-6 text-sm font-medium text-background transition hover:opacity-90;
+  }
+
+  .landing-page__secondary-action {
+    @apply inline-flex h-11 items-center justify-center rounded-2xl border border-border px-6 text-sm font-medium transition hover:bg-muted;
+  }
+
+  .landing-page__features {
+    @apply mt-20 w-full max-w-5xl;
+  }
+
+  .landing-page__feature-grid {
+    @apply grid gap-4 md:grid-cols-3;
+  }
+
+  .landing-page__feature-card {
+    @apply rounded-3xl border border-border bg-card p-6 text-left;
+  }
+
+  .landing-page__feature-title {
+    @apply text-base font-semibold;
+  }
+
+  .landing-page__feature-description {
+    @apply mt-2 text-sm leading-6 text-muted-foreground;
+  }
+
+  .sidebar {
+    @apply flex h-screen w-72 flex-col border-r border-zinc-200 bg-white/80 px-4 py-4 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80;
+  }
+
+  .sidebar__brand {
+    @apply mb-8 px-2;
+  }
+
+  .sidebar__brand-link {
+    @apply group inline-flex items-center gap-3;
+  }
+
+  .sidebar__brand-icon {
+    @apply flex h-10 w-10 items-center justify-center rounded-2xl bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900;
+  }
+
+  .sidebar__brand-mark {
+    @apply h-5 w-5;
+  }
+
+  .sidebar__brand-name {
+    @apply text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100;
+  }
+
+  .sidebar__brand-subtitle {
+    @apply text-sm text-zinc-500 dark:text-zinc-400;
+  }
+
+  .sidebar__nav {
+    @apply flex flex-1 flex-col gap-1;
+  }
+
+  .sidebar__nav-link {
+    @apply group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition-all;
+  }
+
+  .sidebar__nav-link--active {
+    @apply bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900;
+  }
+
+  .sidebar__nav-link--inactive {
+    @apply text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100;
+  }
+
+  .sidebar__nav-icon {
+    @apply h-4 w-4 shrink-0 transition-colors;
+  }
+
+  .sidebar__nav-icon--active {
+    @apply text-white dark:text-zinc-900;
+  }
+
+  .sidebar__nav-icon--inactive {
+    @apply text-zinc-500 group-hover:text-zinc-900 dark:text-zinc-500 dark:group-hover:text-zinc-100;
+  }
+
+  .sidebar__workspace {
+    @apply mt-6 rounded-2xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-900;
+  }
+
+  .sidebar__workspace-title {
+    @apply text-sm font-medium text-zinc-900 dark:text-zinc-100;
+  }
+
+  .sidebar__workspace-description {
+    @apply mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400;
+  }
+
+  .projects-page {
+    @apply min-h-screen bg-background text-foreground;
+  }
+
+  .projects-page__container {
+    @apply mx-auto max-w-6xl px-6 py-10;
+  }
+
+  .projects-page__header {
+    @apply mb-8 flex items-end justify-between gap-4;
+  }
+
+  .projects-page__eyebrow {
+    @apply text-sm font-medium text-muted-foreground;
+  }
+
+  .projects-page__title {
+    @apply mt-1 text-3xl font-semibold tracking-tight;
+  }
+
+  .projects-page__description {
+    @apply mt-2 text-sm text-muted-foreground;
+  }
+
+  .projects-page__count {
+    @apply rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground;
+  }
+
+  .projects-page__empty {
+    @apply rounded-3xl border border-dashed border-border bg-card p-10 text-center;
+  }
+
+  .projects-page__empty-title {
+    @apply text-lg font-medium;
+  }
+
+  .projects-page__empty-description {
+    @apply mt-2 text-sm text-muted-foreground;
+  }
+
+  .projects-page__grid {
+    @apply grid gap-4 md:grid-cols-2 xl:grid-cols-3;
+  }
+
+  .project-card {
+    @apply rounded-3xl border border-border bg-card p-5 shadow-sm transition hover:shadow-md;
+  }
+
+  .project-card__header {
+    @apply flex items-start justify-between gap-3;
+  }
+
+  .project-card__title {
+    @apply text-lg font-semibold tracking-tight;
+  }
+
+  .project-card__type {
+    @apply mt-1 text-xs uppercase tracking-wide text-muted-foreground;
+  }
+
+  .project-card__status {
+    @apply rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground;
+  }
+
+  .project-card__description {
+    @apply mt-4 line-clamp-3 text-sm leading-6 text-muted-foreground;
+  }
+
+  .project-card__meta {
+    @apply mt-6 space-y-2 text-sm;
+  }
+
+  .project-card__meta-row {
+    @apply flex items-center justify-between;
+  }
+
+  .project-card__meta-label {
+    @apply text-muted-foreground;
+  }
+
+  .project-card__meta-value {
+    @apply font-medium;
+  }
+}

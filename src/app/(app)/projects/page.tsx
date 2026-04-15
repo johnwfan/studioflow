@@ -8,71 +8,70 @@ export default async function ProjectsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <div className="mb-8 flex items-end justify-between gap-4">
+    <div className="projects-page">
+      <div className="projects-page__container">
+        <div className="projects-page__header">
           <div>
-            <p className="text-sm font-medium text-muted-foreground">
+            <p className="projects-page__eyebrow">
               workspace
             </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight">
+            <h1 className="projects-page__title">
               Projects
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="projects-page__description">
               Manage your content pipeline from idea to published work.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+          <div className="projects-page__count">
             {projects.length} {projects.length === 1 ? "project" : "projects"}
           </div>
         </div>
 
         {projects.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-border bg-card p-10 text-center">
-            <h2 className="text-lg font-medium">No projects yet</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
+          <div className="projects-page__empty">
+            <h2 className="projects-page__empty-title">No projects yet</h2>
+            <p className="projects-page__empty-description">
               Your workspace is empty right now. Add your first project to get
               started.
             </p>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="projects-page__grid">
             {projects.map((project) => (
-              <article
-                key={project.id}
-                className="rounded-3xl border border-border bg-card p-5 shadow-sm transition hover:shadow-md"
-              >
-                <div className="flex items-start justify-between gap-3">
+              <article key={project.id} className="project-card">
+                <div className="project-card__header">
                   <div>
-                    <h2 className="text-lg font-semibold tracking-tight">
+                    <h2 className="project-card__title">
                       {project.title}
                     </h2>
-                    <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
+                    <p className="project-card__type">
                       {project.contentType.replace("_", " ")}
                     </p>
                   </div>
 
-                  <span className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+                  <span className="project-card__status">
                     {project.status.toLowerCase()}
                   </span>
                 </div>
 
-                <p className="mt-4 line-clamp-3 text-sm leading-6 text-muted-foreground">
+                <p className="project-card__description">
                   {project.description || "No description yet."}
                 </p>
 
-                <div className="mt-6 space-y-2 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Created</span>
-                    <span className="font-medium">
+                <div className="project-card__meta">
+                  <div className="project-card__meta-row">
+                    <span className="project-card__meta-label">Created</span>
+                    <span className="project-card__meta-value">
                       {new Date(project.createdAt).toLocaleDateString()}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Publish date</span>
-                    <span className="font-medium">
+                  <div className="project-card__meta-row">
+                    <span className="project-card__meta-label">
+                      Publish date
+                    </span>
+                    <span className="project-card__meta-value">
                       {project.publishDate
                         ? new Date(project.publishDate).toLocaleDateString()
                         : "Not scheduled"}
