@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ProjectStatus {
+  IDEA
+  SCRIPTING
+  FILMING
+  EDITING
+  SCHEDULED
+  PUBLISHED
+}
+
+enum ContentType {
+  YOUTUBE
+  SHORT_FORM
+  STREAM
+  POST
+  PODCAST
+  OTHER
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+
+  projects Project[]
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  notes       String?
+  status      ProjectStatus @default(IDEA)
+  contentType ContentType   @default(OTHER)
+  publishDate DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  tasks      Task[]
+  assetLinks AssetLink[]
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  text      String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+}
+
+model AssetLink {
+  id        String   @id @default(cuid())
+  label     String
+  url       String
+  createdAt DateTime @default(now())
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+}
