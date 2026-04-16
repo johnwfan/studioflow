@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   FolderKanban,
+  Columns3,
   CalendarDays,
   Settings,
   Sparkles,
@@ -20,6 +21,11 @@ const navItems = [
     label: "Projects",
     href: "/projects",
     icon: FolderKanban,
+  },
+  {
+    label: "Workflow",
+    href: "/workflow",
+    icon: Columns3,
   },
   {
     label: "Calendar",

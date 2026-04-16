@@ -29,20 +29,39 @@ function formatEnumLabel(value: string) {
 }
 
 export default async function DashboardPage() {
-  const projects = await prisma.project.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    select: {
-      id: true,
-      title: true,
-      status: true,
-      contentType: true,
-      publishDate: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
+  const [projects, tasks] = await Promise.all([
+    prisma.project.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        contentType: true,
+        publishDate: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
+    prisma.task.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        text: true,
+        completed: true,
+        createdAt: true,
+        project: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+      },
+    }),
+  ]);
 
   const totalProjects = projects.length;
   const ideaProjects = projects.filter((project) => project.status === "IDEA");
@@ -52,6 +71,9 @@ export default async function DashboardPage() {
   const publishedProjects = projects.filter(
     (project) => project.status === "PUBLISHED",
   );
+
+  const openTasks = tasks.filter((task) => !task.completed);
+  const completedTasks = tasks.filter((task) => task.completed);
 
   const upcomingProjects = [...scheduledProjects]
     .sort((a, b) => {
@@ -66,6 +88,8 @@ export default async function DashboardPage() {
   const recentProjects = [...projects]
     .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
     .slice(0, 5);
+
+  const taskPreview = openTasks.slice(0, 5);
 
   const summaryCards = [
     {
@@ -94,16 +118,36 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-zinc-50">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10 sm:px-8 lg:px-10">
         <header className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Workspace Snapshot
-          </p>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
-            Dashboard
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-600 sm:text-base">
-            A quick view of your pipeline so you can see how much is in motion,
-            what is scheduled next, and which projects were updated recently.
-          </p>
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+                Workspace Snapshot
+              </p>
+              <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
+                Dashboard
+              </h1>
+              <p className="mt-3 text-sm leading-7 text-zinc-600 sm:text-base">
+                Your home base for seeing what is in motion, what needs
+                attention next, and what is coming up on the publishing
+                schedule.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/projects"
+                className="inline-flex h-11 items-center justify-center rounded-2xl border border-zinc-300 px-5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
+              >
+                View Projects
+              </Link>
+              <Link
+                href="/projects/new"
+                className="inline-flex h-11 items-center justify-center rounded-2xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
+              >
+                New Project
+              </Link>
+            </div>
+          </div>
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -123,7 +167,7 @@ export default async function DashboardPage() {
           ))}
         </section>
 
-        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
             <div className="flex items-center justify-between gap-4">
               <div>
@@ -131,7 +175,7 @@ export default async function DashboardPage() {
                   Next Up
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">
-                  Upcoming
+                  Upcoming Schedule
                 </h2>
               </div>
 
@@ -194,59 +238,128 @@ export default async function DashboardPage() {
           </section>
 
           <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-                Activity
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+                  Tasks
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">
+                  Open Task Overview
+                </h2>
+              </div>
+              <p className="text-sm text-zinc-500">
+                {openTasks.length} open
               </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">
-                Recent Projects
-              </h2>
             </div>
 
-            {recentProjects.length === 0 ? (
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <article className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+                <p className="text-sm font-medium text-zinc-500">Open tasks</p>
+                <p className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950">
+                  {openTasks.length}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-zinc-600">
+                  Active next steps still waiting to be finished.
+                </p>
+              </article>
+
+              <article className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+                <p className="text-sm font-medium text-zinc-500">
+                  Completed tasks
+                </p>
+                <p className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950">
+                  {completedTasks.length}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-zinc-600">
+                  Work already checked off across your projects.
+                </p>
+              </article>
+            </div>
+
+            {taskPreview.length === 0 ? (
               <div className="mt-6 rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-6">
                 <h3 className="text-base font-semibold text-zinc-950">
-                  No projects yet
+                  No open tasks yet
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-zinc-600">
-                  Your most recently updated projects will appear here once you
-                  start creating work.
+                  Once you add tasks to projects, the most recent open items
+                  will show up here.
                 </p>
               </div>
             ) : (
               <div className="mt-6 space-y-3">
-                {recentProjects.map((project) => (
+                {taskPreview.map((task) => (
                   <Link
-                    key={project.id}
-                    href={`/projects/${project.id}`}
+                    key={task.id}
+                    href={`/projects/${task.project.id}`}
                     className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-4 transition hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="min-w-0">
-                        <h3 className="truncate text-sm font-semibold text-zinc-950">
-                          {project.title}
-                        </h3>
-                        <p className="mt-2 text-xs uppercase tracking-wide text-zinc-500">
-                          {formatEnumLabel(project.status)} •{" "}
-                          {formatEnumLabel(project.contentType)}
-                        </p>
-                      </div>
-
-                      <div className="shrink-0 text-right">
-                        <p className="text-sm font-medium text-zinc-900">
-                          {formatDate(project.updatedAt)}
-                        </p>
-                        <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
-                          Updated
-                        </p>
-                      </div>
-                    </div>
+                    <p className="text-sm font-semibold text-zinc-950">
+                      {task.text}
+                    </p>
+                    <p className="mt-2 text-xs uppercase tracking-wide text-zinc-500">
+                      {task.project.title}
+                    </p>
                   </Link>
                 ))}
               </div>
             )}
           </section>
         </div>
+
+        <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+              Activity
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">
+              Recent Projects
+            </h2>
+          </div>
+
+          {recentProjects.length === 0 ? (
+            <div className="mt-6 rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-6">
+              <h3 className="text-base font-semibold text-zinc-950">
+                No projects yet
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-zinc-600">
+                Your recently updated work will appear here once projects start
+                moving through the pipeline.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-6 grid gap-3 lg:grid-cols-2">
+              {recentProjects.map((project) => (
+                <Link
+                  key={project.id}
+                  href={`/projects/${project.id}`}
+                  className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-5 transition hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <h3 className="truncate text-base font-semibold text-zinc-950">
+                        {project.title}
+                      </h3>
+                      <p className="mt-2 text-xs uppercase tracking-wide text-zinc-500">
+                        {formatEnumLabel(project.status)} •{" "}
+                        {formatEnumLabel(project.contentType)}
+                      </p>
+                    </div>
+
+                    <div className="shrink-0 text-right">
+                      <p className="text-sm font-medium text-zinc-900">
+                        {formatDate(project.updatedAt)}
+                      </p>
+                      <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
+                        Updated
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );
