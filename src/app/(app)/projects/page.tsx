@@ -25,8 +25,17 @@ export default async function ProjectsPage() {
             </p>
           </div>
 
-          <div className="projects-page__count">
-            {projects.length} {projects.length === 1 ? "project" : "projects"}
+          <div className="flex items-center gap-3">
+            <div className="projects-page__count">
+              {projects.length} {projects.length === 1 ? "project" : "projects"}
+            </div>
+
+            <Link
+              href="/projects/new"
+              className="inline-flex h-11 items-center justify-center rounded-2xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
+            >
+              New Project
+            </Link>
           </div>
         </div>
 
