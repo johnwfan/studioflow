@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { prisma } from "@/lib/prisma";
 
 export default async function ProjectsPage() {
@@ -39,46 +41,52 @@ export default async function ProjectsPage() {
         ) : (
           <div className="projects-page__grid">
             {projects.map((project) => (
-              <article key={project.id} className="project-card">
-                <div className="project-card__header">
-                  <div>
-                    <h2 className="project-card__title">
-                      {project.title}
-                    </h2>
-                    <p className="project-card__type">
-                      {project.contentType.replace("_", " ")}
-                    </p>
-                  </div>
+              <Link
+                key={project.id}
+                href={`/projects/${project.id}`}
+                className="block rounded-[inherit] transition duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+              >
+                <article className="project-card">
+                  <div className="project-card__header">
+                    <div>
+                      <h2 className="project-card__title">
+                        {project.title}
+                      </h2>
+                      <p className="project-card__type">
+                        {project.contentType.replace("_", " ")}
+                      </p>
+                    </div>
 
-                  <span className="project-card__status">
-                    {project.status.toLowerCase()}
-                  </span>
-                </div>
-
-                <p className="project-card__description">
-                  {project.description || "No description yet."}
-                </p>
-
-                <div className="project-card__meta">
-                  <div className="project-card__meta-row">
-                    <span className="project-card__meta-label">Created</span>
-                    <span className="project-card__meta-value">
-                      {new Date(project.createdAt).toLocaleDateString()}
+                    <span className="project-card__status">
+                      {project.status.toLowerCase()}
                     </span>
                   </div>
 
-                  <div className="project-card__meta-row">
-                    <span className="project-card__meta-label">
-                      Publish date
-                    </span>
-                    <span className="project-card__meta-value">
-                      {project.publishDate
-                        ? new Date(project.publishDate).toLocaleDateString()
-                        : "Not scheduled"}
-                    </span>
+                  <p className="project-card__description">
+                    {project.description || "No description yet."}
+                  </p>
+
+                  <div className="project-card__meta">
+                    <div className="project-card__meta-row">
+                      <span className="project-card__meta-label">Created</span>
+                      <span className="project-card__meta-value">
+                        {new Date(project.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    <div className="project-card__meta-row">
+                      <span className="project-card__meta-label">
+                        Publish date
+                      </span>
+                      <span className="project-card__meta-value">
+                        {project.publishDate
+                          ? new Date(project.publishDate).toLocaleDateString()
+                          : "Not scheduled"}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </article>
+                </article>
+              </Link>
             ))}
           </div>
         )}
