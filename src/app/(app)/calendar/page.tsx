@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -88,49 +89,52 @@ export default async function CalendarPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-10 sm:px-8 lg:px-10">
-        <header className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Publishing Schedule
-          </p>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
-            Calendar
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-600 sm:text-base">
-            A simple schedule view of upcoming content so you can see what is
-            planned, when it goes live, and how your pipeline is lining up.
-          </p>
+    <div className="page-shell">
+      <div className="page-shell__inner">
+        <header className="page-header">
+          <div className="page-header__content">
+            <div className="page-header__body">
+              <p className="page-header__eyebrow">Publishing Schedule</p>
+              <h1 className="page-header__title">Calendar</h1>
+              <p className="page-header__description">
+                A simple schedule view of upcoming content so you can see what is
+                planned, when it goes live, and how your pipeline is lining up.
+              </p>
+            </div>
+
+            <div className="page-header__actions">
+              <Button asChild variant="outline" size="lg">
+                <Link href="/projects">View projects</Link>
+              </Button>
+            </div>
+          </div>
         </header>
 
         {projectsByDay.length === 0 ? (
-          <section className="rounded-3xl border border-dashed border-zinc-300 bg-white p-10 text-center shadow-sm">
-            <h2 className="text-xl font-semibold tracking-tight text-zinc-950">
-              No scheduled projects yet
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-zinc-600">
-              Projects with a publish date will appear here in chronological
-              order.
+          <section className="surface-empty">
+            <h2 className="surface-empty__title">No scheduled projects yet</h2>
+            <p className="surface-empty__description">
+              Projects with a publish date will appear here in chronological order.
             </p>
+            <div className="mt-5">
+              <Button asChild size="lg">
+                <Link href="/projects/new">Create a scheduled project</Link>
+              </Button>
+            </div>
           </section>
         ) : (
           <div className="space-y-6">
             {projectsByDay.map((group) => (
-              <section
-                key={group.dateKey}
-                className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8"
-              >
-                <div className="flex flex-col gap-2 border-b border-zinc-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
+              <section key={group.dateKey} className="page-section">
+                <div className="page-section__header border-b border-border pb-5">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-                      Scheduled Day
-                    </p>
-                    <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">
+                    <p className="page-section__eyebrow">Scheduled Day</p>
+                    <h2 className="page-section__title">
                       {formatDateHeading(group.date)}
                     </h2>
                   </div>
 
-                  <p className="text-sm text-zinc-500">
+                  <p className="text-sm text-muted-foreground">
                     {group.projects.length}{" "}
                     {group.projects.length === 1 ? "project" : "projects"}
                   </p>
@@ -141,31 +145,29 @@ export default async function CalendarPage() {
                     <Link
                       key={project.id}
                       href={`/projects/${project.id}`}
-                      className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-5 transition hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+                      className="list-card block"
                     >
                       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                         <div className="min-w-0 flex-1">
-                          <h3 className="text-base font-semibold text-zinc-950">
+                          <h3 className="text-base font-semibold text-foreground">
                             {project.title}
                           </h3>
 
                           <div className="mt-3 flex flex-wrap gap-2">
-                            <span className="rounded-full bg-zinc-200 px-3 py-1 text-xs font-medium text-zinc-700">
-                              {formatEnumLabel(project.status)}
-                            </span>
-                            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200">
+                            <span className="chip">{formatEnumLabel(project.status)}</span>
+                            <span className="chip">
                               {formatEnumLabel(project.contentType)}
                             </span>
                           </div>
                         </div>
 
-                        <div className="shrink-0 text-sm text-zinc-600 md:text-right">
-                          <p className="font-medium text-zinc-900">
+                        <div className="shrink-0 text-sm text-muted-foreground md:text-right">
+                          <p className="font-medium text-foreground">
                             {project.publishDate
                               ? formatTime(project.publishDate)
                               : "Time TBD"}
                           </p>
-                          <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
+                          <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
                             Publish time
                           </p>
                         </div>

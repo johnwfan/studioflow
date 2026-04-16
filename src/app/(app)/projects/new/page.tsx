@@ -1,7 +1,9 @@
-import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
+import { Button } from "@/components/ui/button";
+import SubmitButton from "@/components/ui/submit-button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -77,7 +79,7 @@ async function createProject(formData: FormData) {
   revalidatePath("/dashboard");
   revalidatePath("/calendar");
   revalidatePath("/workflow");
-  redirect(`/projects/${project.id}`);
+  redirect(`/projects/${project.id}?created=1`);
 }
 
 type NewProjectPageProps = {
@@ -93,46 +95,42 @@ export default async function NewProjectPage({
   const titleError = resolvedSearchParams?.error === "title";
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-10 sm:px-8 lg:px-10">
-        <header className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Create Project
-          </p>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
-            New project
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-600 sm:text-base">
-            Capture a new idea, add a little production context, and send it
-            straight into your Studioflow workspace.
-          </p>
-        </header>
-
-        <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-semibold tracking-tight text-zinc-950">
-                Project details
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-zinc-600">
-                Keep it simple for now. You can expand the workflow later.
+    <div className="page-shell">
+      <div className="page-shell__inner page-shell__inner--narrow">
+        <header className="page-header">
+          <div className="page-header__content">
+            <div className="page-header__body">
+              <p className="page-header__eyebrow">Create Project</p>
+              <h1 className="page-header__title">New project</h1>
+              <p className="page-header__description">
+                Capture a new idea, add a little production context, and send it
+                straight into your Studioflow workspace.
               </p>
             </div>
 
-            <Link
-              href="/projects"
-              className="text-sm font-medium text-zinc-600 transition hover:text-zinc-950"
-            >
-              Back to projects
-            </Link>
+            <div className="page-header__actions">
+              <Button asChild variant="outline" size="lg">
+                <Link href="/projects">Back to projects</Link>
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <section className="page-section">
+          <div className="page-section__header">
+            <div>
+              <p className="page-section__eyebrow">Project Details</p>
+              <h2 className="page-section__title">Start simple</h2>
+              <p className="page-section__description">
+                Give the project enough structure to become actionable without
+                adding extra workflow complexity yet.
+              </p>
+            </div>
           </div>
 
           <form action={createProject} className="mt-8 space-y-6">
             <div className="space-y-2">
-              <label
-                htmlFor="title"
-                className="text-sm font-medium text-zinc-800"
-              >
+              <label htmlFor="title" className="text-sm font-medium text-foreground">
                 Title
               </label>
               <input
@@ -141,10 +139,10 @@ export default async function NewProjectPage({
                 type="text"
                 required
                 placeholder="How I plan a week of content"
-                className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                className="ui-input"
               />
               {titleError ? (
-                <p className="text-sm text-red-600">
+                <p className="ui-error-text">
                   Title is required before you can create a project.
                 </p>
               ) : null}
@@ -152,17 +150,14 @@ export default async function NewProjectPage({
 
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <label
-                  htmlFor="status"
-                  className="text-sm font-medium text-zinc-800"
-                >
+                <label htmlFor="status" className="text-sm font-medium text-foreground">
                   Status
                 </label>
                 <select
                   id="status"
                   name="status"
                   defaultValue="IDEA"
-                  className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                  className="ui-select"
                 >
                   {statusOptions.map((option) => (
                     <option key={option} value={option}>
@@ -175,7 +170,7 @@ export default async function NewProjectPage({
               <div className="space-y-2">
                 <label
                   htmlFor="contentType"
-                  className="text-sm font-medium text-zinc-800"
+                  className="text-sm font-medium text-foreground"
                 >
                   Content type
                 </label>
@@ -183,7 +178,7 @@ export default async function NewProjectPage({
                   id="contentType"
                   name="contentType"
                   defaultValue="YOUTUBE"
-                  className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                  className="ui-select"
                 >
                   {contentTypeOptions.map((option) => (
                     <option key={option} value={option}>
@@ -197,7 +192,7 @@ export default async function NewProjectPage({
             <div className="space-y-2">
               <label
                 htmlFor="description"
-                className="text-sm font-medium text-zinc-800"
+                className="text-sm font-medium text-foreground"
               >
                 Description
               </label>
@@ -206,15 +201,12 @@ export default async function NewProjectPage({
                 name="description"
                 rows={4}
                 placeholder="Give this project a quick summary so future-you knows what it is."
-                className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm leading-6 text-zinc-900 shadow-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                className="ui-textarea"
               />
             </div>
 
             <div className="space-y-2">
-              <label
-                htmlFor="notes"
-                className="text-sm font-medium text-zinc-800"
-              >
+              <label htmlFor="notes" className="text-sm font-medium text-foreground">
                 Notes
               </label>
               <textarea
@@ -222,14 +214,14 @@ export default async function NewProjectPage({
                 name="notes"
                 rows={6}
                 placeholder="Add scripting notes, thumbnail ideas, hooks, production reminders, or anything else helpful."
-                className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm leading-6 text-zinc-900 shadow-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                className="ui-textarea"
               />
             </div>
 
             <div className="space-y-2">
               <label
                 htmlFor="publishDate"
-                className="text-sm font-medium text-zinc-800"
+                className="text-sm font-medium text-foreground"
               >
                 Publish date
               </label>
@@ -237,26 +229,20 @@ export default async function NewProjectPage({
                 id="publishDate"
                 name="publishDate"
                 type="datetime-local"
-                className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                className="ui-input"
               />
-              <p className="text-sm text-zinc-500">
+              <p className="ui-help-text">
                 Leave this blank if the project is not scheduled yet.
               </p>
             </div>
 
-            <div className="flex flex-col gap-3 border-t border-zinc-200 pt-6 sm:flex-row sm:items-center sm:justify-end">
-              <Link
-                href="/projects"
-                className="inline-flex h-11 items-center justify-center rounded-2xl border border-zinc-300 px-5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
-              >
-                Cancel
-              </Link>
-              <button
-                type="submit"
-                className="inline-flex h-11 items-center justify-center rounded-2xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
-              >
+            <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
+              <Button asChild variant="outline" size="lg">
+                <Link href="/projects">Cancel</Link>
+              </Button>
+              <SubmitButton size="lg" pendingLabel="Creating project...">
                 Create project
-              </button>
+              </SubmitButton>
             </div>
           </form>
         </section>

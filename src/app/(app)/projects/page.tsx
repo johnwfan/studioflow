@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -25,6 +26,8 @@ type ProjectsPageProps = {
   searchParams?: Promise<{
     status?: string;
     contentType?: string;
+    created?: string;
+    deleted?: string;
   }>;
 };
 
@@ -60,12 +63,8 @@ export default async function ProjectsPage({
       : "";
 
   const projects = await prisma.project.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
+    where: { userId },
+    orderBy: { createdAt: "desc" },
     include: {
       tasks: {
         select: {
@@ -85,102 +84,117 @@ export default async function ProjectsPage({
   });
 
   return (
-    <div className="projects-page">
-      <div className="projects-page__container">
-        <div className="projects-page__header">
-          <div>
-            <p className="projects-page__eyebrow">
-              workspace
-            </p>
-            <h1 className="projects-page__title">
-              Projects
-            </h1>
-            <p className="projects-page__description">
-              Manage your content pipeline from idea to published work.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="projects-page__count">
-              {filteredProjects.length}{" "}
-              {filteredProjects.length === 1 ? "project" : "projects"}
-            </div>
-
-            <Link
-              href="/projects/new"
-              className="inline-flex h-11 items-center justify-center rounded-2xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
-            >
-              New Project
-            </Link>
-          </div>
-        </div>
-
-        <section className="mb-8 rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <h2 className="text-lg font-semibold tracking-tight text-zinc-950">
-                Filters
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-zinc-600">
-                Narrow the workspace by production stage or content type.
+    <div className="page-shell">
+      <div className="page-shell__inner">
+        <header className="page-header">
+          <div className="page-header__content">
+            <div className="page-header__body">
+              <p className="page-header__eyebrow">Workspace</p>
+              <h1 className="page-header__title">Projects</h1>
+              <p className="page-header__description">
+                Manage your content pipeline from idea to published work in one
+                clean workspace.
               </p>
             </div>
 
-            <form method="get" className="grid gap-3 sm:grid-cols-3">
-              <select
-                name="status"
-                defaultValue={selectedStatus}
-                className="rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
-              >
-                <option value="">All statuses</option>
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {formatEnumLabel(status)}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                name="contentType"
-                defaultValue={selectedContentType}
-                className="rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
-              >
-                <option value="">All content types</option>
-                {contentTypeOptions.map((contentType) => (
-                  <option key={contentType} value={contentType}>
-                    {formatEnumLabel(contentType)}
-                  </option>
-                ))}
-              </select>
-
-              <div className="flex gap-3">
-                <button
-                  type="submit"
-                  className="inline-flex h-11 items-center justify-center rounded-2xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
-                >
-                  Apply
-                </button>
-                <Link
-                  href="/projects"
-                  className="inline-flex h-11 items-center justify-center rounded-2xl border border-zinc-300 px-5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
-                >
-                  Reset
-                </Link>
+            <div className="page-header__actions">
+              <div className="chip">
+                {filteredProjects.length}{" "}
+                {filteredProjects.length === 1 ? "project" : "projects"}
               </div>
-            </form>
+              <Button asChild size="lg">
+                <Link href="/projects/new">New project</Link>
+              </Button>
+            </div>
           </div>
+
+          {resolvedSearchParams?.created === "1" ? (
+            <div className="surface-subtle mt-6">
+              <p className="text-sm font-medium text-foreground">
+                Project created successfully.
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                It is now part of your workspace and ready for tasks, notes, and links.
+              </p>
+            </div>
+          ) : null}
+
+          {resolvedSearchParams?.deleted === "1" ? (
+            <div className="surface-subtle mt-6">
+              <p className="text-sm font-medium text-foreground">
+                Project deleted successfully.
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                The workspace list has been refreshed so you can keep moving.
+              </p>
+            </div>
+          ) : null}
+        </header>
+
+        <section className="page-section">
+          <div className="page-section__header">
+            <div>
+              <p className="page-section__eyebrow">Filters</p>
+              <h2 className="page-section__title">Refine your workspace</h2>
+              <p className="page-section__description">
+                Narrow the list by production stage or content type.
+              </p>
+            </div>
+          </div>
+
+          <form method="get" className="mt-6 grid gap-3 lg:grid-cols-[1fr_1fr_auto]">
+            <select
+              name="status"
+              defaultValue={selectedStatus}
+              className="ui-select"
+            >
+              <option value="">All statuses</option>
+              {statusOptions.map((status) => (
+                <option key={status} value={status}>
+                  {formatEnumLabel(status)}
+                </option>
+              ))}
+            </select>
+
+            <select
+              name="contentType"
+              defaultValue={selectedContentType}
+              className="ui-select"
+            >
+              <option value="">All content types</option>
+              {contentTypeOptions.map((contentType) => (
+                <option key={contentType} value={contentType}>
+                  {formatEnumLabel(contentType)}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex flex-wrap gap-3">
+              <Button type="submit" size="lg">
+                Apply
+              </Button>
+              <Button asChild variant="outline" size="lg">
+                <Link href="/projects">Reset</Link>
+              </Button>
+            </div>
+          </form>
         </section>
 
         {filteredProjects.length === 0 ? (
-          <div className="projects-page__empty">
-            <h2 className="projects-page__empty-title">No matching projects</h2>
-            <p className="projects-page__empty-description">
+          <section className="surface-empty">
+            <h2 className="surface-empty__title">No matching projects yet</h2>
+            <p className="surface-empty__description">
               Try a different filter combination, or create a new project to
               start filling the workspace.
             </p>
-          </div>
+            <div className="mt-5">
+              <Button asChild size="lg">
+                <Link href="/projects/new">Create a project</Link>
+              </Button>
+            </div>
+          </section>
         ) : (
-          <div className="projects-page__grid">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredProjects.map((project) => {
               const taskProgress = getTaskProgress(project.tasks);
               const completedTaskCount = project.tasks.filter(
@@ -191,56 +205,51 @@ export default async function ProjectsPage({
                 <Link
                   key={project.id}
                   href={`/projects/${project.id}`}
-                  className="block rounded-[inherit] transition duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+                  className="list-card block rounded-4xl"
                 >
-                  <article className="project-card">
-                    <div className="project-card__header">
+                  <article>
+                    <div className="flex items-start justify-between gap-3">
                       <div>
-                        <h2 className="project-card__title">
+                        <h2 className="text-lg font-semibold tracking-tight text-foreground">
                           {project.title}
                         </h2>
-                        <p className="project-card__type">
+                        <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
                           {formatEnumLabel(project.contentType)}
                         </p>
                       </div>
 
-                      <span className="project-card__status">
-                        {project.status.toLowerCase()}
-                      </span>
+                      <span className="chip">{formatEnumLabel(project.status)}</span>
                     </div>
 
-                    <p className="project-card__description">
+                    <p className="mt-4 line-clamp-3 text-sm leading-6 text-muted-foreground">
                       {project.description || "No description yet."}
                     </p>
 
                     <div className="mt-5">
-                      <div className="flex items-center justify-between gap-3 text-sm text-zinc-600">
+                      <div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
                         <span>Task progress</span>
                         <span>
                           {taskProgress}% • {completedTaskCount}/{project.tasks.length}
                         </span>
                       </div>
-                      <div className="mt-2 h-2 rounded-full bg-zinc-200">
+                      <div className="progress-track">
                         <div
-                          className="h-2 rounded-full bg-zinc-900 transition-all"
+                          className="progress-bar"
                           style={{ width: `${taskProgress}%` }}
                         />
                       </div>
                     </div>
 
-                    <div className="project-card__meta">
-                      <div className="project-card__meta-row">
-                        <span className="project-card__meta-label">Created</span>
-                        <span className="project-card__meta-value">
+                    <div className="mt-6 space-y-2 text-sm">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-muted-foreground">Created</span>
+                        <span className="font-medium text-foreground">
                           {new Date(project.createdAt).toLocaleDateString()}
                         </span>
                       </div>
-
-                      <div className="project-card__meta-row">
-                        <span className="project-card__meta-label">
-                          Publish date
-                        </span>
-                        <span className="project-card__meta-value">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-muted-foreground">Publish date</span>
+                        <span className="font-medium text-foreground">
                           {project.publishDate
                             ? new Date(project.publishDate).toLocaleDateString()
                             : "Not scheduled"}

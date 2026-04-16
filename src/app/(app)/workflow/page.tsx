@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -86,37 +87,27 @@ export default async function WorkflowPage() {
   }));
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-8 px-6 py-10 sm:px-8 lg:px-10">
-        <header className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-            <div className="max-w-3xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-                Production Pipeline
-              </p>
-              <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
-                Workflow Board
-              </h1>
-              <p className="mt-3 text-sm leading-7 text-zinc-600 sm:text-base">
+    <div className="page-shell">
+      <div className="page-shell__inner page-shell__inner--wide">
+        <header className="page-header">
+          <div className="page-header__content">
+            <div className="page-header__body">
+              <p className="page-header__eyebrow">Production Pipeline</p>
+              <h1 className="page-header__title">Workflow Board</h1>
+              <p className="page-header__description">
                 A calm, kanban-style view of your creator pipeline so you can
                 see what is still an idea, what is in production, and what is
                 already scheduled or shipped.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <Link
-                href="/projects"
-                className="inline-flex h-11 items-center justify-center rounded-2xl border border-zinc-300 px-5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
-              >
-                View Projects
-              </Link>
-              <Link
-                href="/projects/new"
-                className="inline-flex h-11 items-center justify-center rounded-2xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
-              >
-                New Project
-              </Link>
+            <div className="page-header__actions">
+              <Button asChild variant="outline" size="lg">
+                <Link href="/projects">View projects</Link>
+              </Button>
+              <Button asChild size="lg">
+                <Link href="/projects/new">New project</Link>
+              </Button>
             </div>
           </div>
         </header>
@@ -126,27 +117,30 @@ export default async function WorkflowPage() {
             {columns.map((column) => (
               <section
                 key={column.key}
-                className="flex min-h-[32rem] flex-col rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm"
+                className="flex min-h-[32rem] flex-col rounded-4xl border border-border bg-card p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
               >
-                <div className="border-b border-zinc-200 pb-4">
+                <div className="border-b border-border pb-4">
                   <div className="flex items-center justify-between gap-3">
-                    <h2 className="text-lg font-semibold text-zinc-950">
+                    <h2 className="text-lg font-semibold text-foreground">
                       {column.label}
                     </h2>
-                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700">
-                      {column.projects.length}
-                    </span>
+                    <span className="chip">{column.projects.length}</span>
                   </div>
-                  <p className="mt-2 text-sm leading-6 text-zinc-500">
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
                     {column.description}
                   </p>
                 </div>
 
                 {column.projects.length === 0 ? (
-                  <div className="mt-5 flex flex-1 items-center justify-center rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-5 text-center">
-                    <p className="text-sm leading-6 text-zinc-500">
-                      No projects in {column.label.toLowerCase()} right now.
-                    </p>
+                  <div className="surface-empty mt-5 flex flex-1 items-center justify-center">
+                    <div>
+                      <h3 className="surface-empty__title">
+                        Nothing here yet
+                      </h3>
+                      <p className="surface-empty__description">
+                        No projects in {column.label.toLowerCase()} right now.
+                      </p>
+                    </div>
                   </div>
                 ) : (
                   <div className="mt-5 space-y-3">
@@ -154,32 +148,30 @@ export default async function WorkflowPage() {
                       <Link
                         key={project.id}
                         href={`/projects/${project.id}`}
-                        className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-4 transition hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+                        className="list-card block"
                       >
                         <div className="flex items-start justify-between gap-3">
-                          <h3 className="text-sm font-semibold leading-6 text-zinc-950">
+                          <h3 className="text-sm font-semibold leading-6 text-foreground">
                             {project.title}
                           </h3>
-                          <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-600 ring-1 ring-zinc-200">
+                          <span className="chip shrink-0">
                             {formatContentType(project.contentType)}
                           </span>
                         </div>
 
                         {project.description ? (
-                          <p className="mt-3 line-clamp-3 text-sm leading-6 text-zinc-600">
+                          <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
                             {project.description}
                           </p>
                         ) : (
-                          <p className="mt-3 text-sm leading-6 text-zinc-400">
+                          <p className="mt-3 text-sm leading-6 text-muted-foreground">
                             No description yet.
                           </p>
                         )}
 
-                        <div className="mt-4 flex items-center justify-between gap-3 text-xs uppercase tracking-wide text-zinc-500">
+                        <div className="mt-4 flex items-center justify-between gap-3 text-xs uppercase tracking-wide text-muted-foreground">
                           <span>{column.label}</span>
-                          <span>
-                            {formatDate(project.publishDate) ?? "No publish date"}
-                          </span>
+                          <span>{formatDate(project.publishDate) ?? "No publish date"}</span>
                         </div>
                       </Link>
                     ))}

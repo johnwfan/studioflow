@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import SignOutAction from "@/components/sign-out-action";
 import ThemePicker from "@/components/theme-picker";
+import { Button } from "@/components/ui/button";
 
 function getDisplayName(name: string | null | undefined, email: string | undefined) {
   if (name && name.trim()) {
@@ -23,29 +24,23 @@ export default async function SettingsPage() {
   const displayName = getDisplayName(user?.fullName, primaryEmail);
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10 sm:px-8 lg:px-10">
-        <header className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Workspace Settings
-          </p>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
-            Settings
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-600 sm:text-base">
-            Manage your account details and keep an eye on the settings that
-            will shape your Studioflow workspace as the product grows.
-          </p>
+    <div className="page-shell">
+      <div className="page-shell__inner">
+        <header className="page-header">
+          <div className="page-header__body">
+            <p className="page-header__eyebrow">Workspace Settings</p>
+            <h1 className="page-header__title">Settings</h1>
+            <p className="page-header__description">
+              Manage your account details and keep an eye on the settings that
+              shape your Studioflow workspace.
+            </p>
+          </div>
         </header>
 
         <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-          <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-              Account
-            </p>
-            <h2 className="mt-2 text-xl font-semibold tracking-tight text-zinc-950">
-              Profile details
-            </h2>
+          <section className="page-section">
+            <p className="page-section__eyebrow">Account</p>
+            <h2 className="page-section__title">Profile details</h2>
 
             <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-center">
               {user?.imageUrl ? (
@@ -54,22 +49,20 @@ export default async function SettingsPage() {
                   alt={displayName}
                   width={80}
                   height={80}
-                  className="h-20 w-20 rounded-3xl border border-zinc-200 object-cover"
+                  className="h-20 w-20 rounded-3xl border border-border object-cover"
                 />
               ) : (
-                <div className="flex h-20 w-20 items-center justify-center rounded-3xl border border-zinc-200 bg-zinc-100 text-xl font-semibold text-zinc-700">
+                <div className="flex h-20 w-20 items-center justify-center rounded-3xl border border-border bg-secondary text-xl font-semibold text-secondary-foreground">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
               )}
 
               <div className="min-w-0">
-                <p className="text-lg font-semibold text-zinc-950">
-                  {displayName}
-                </p>
-                <p className="mt-1 text-sm text-zinc-600">
+                <p className="text-lg font-semibold text-foreground">{displayName}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
                   {primaryEmail ?? "No email available"}
                 </p>
-                <p className="mt-3 text-sm leading-6 text-zinc-500">
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   Your account is handled by Clerk, and Studioflow uses that
                   identity to protect your workspace data.
                 </p>
@@ -77,38 +70,30 @@ export default async function SettingsPage() {
             </div>
           </section>
 
-          <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-              Account Actions
-            </p>
-            <h2 className="mt-2 text-xl font-semibold tracking-tight text-zinc-950">
-              Security and account access
-            </h2>
+          <section className="page-section">
+            <p className="page-section__eyebrow">Account Actions</p>
+            <h2 className="page-section__title">Security and access</h2>
 
             <div className="mt-6 space-y-4">
-              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-                <p className="text-sm font-medium text-zinc-900">
+              <div className="surface-subtle">
+                <p className="text-sm font-medium text-foreground">
                   Manage your Clerk account
                 </p>
-                <p className="mt-2 text-sm leading-6 text-zinc-600">
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   Update profile information, connected sign-in methods, and
                   account security details.
                 </p>
                 <div className="mt-4">
-                  <Link
-                    href="/user-profile"
-                    className="inline-flex h-11 items-center justify-center rounded-2xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
-                  >
-                    Manage account
-                  </Link>
+                  <Button asChild size="lg">
+                    <Link href="/user-profile">Manage account</Link>
+                  </Button>
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-                <p className="text-sm font-medium text-zinc-900">Sign out</p>
-                <p className="mt-2 text-sm leading-6 text-zinc-600">
-                  End your current session and return to the public landing
-                  page.
+              <div className="surface-subtle">
+                <p className="text-sm font-medium text-foreground">Sign out</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  End your current session and return to the public landing page.
                 </p>
                 <div className="mt-4">
                   <SignOutAction />
@@ -118,14 +103,10 @@ export default async function SettingsPage() {
           </section>
         </div>
 
-        <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Theme
-          </p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight text-zinc-950">
-            Choose your workspace look
-          </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-zinc-600">
+        <section className="page-section">
+          <p className="page-section__eyebrow">Theme</p>
+          <h2 className="page-section__title">Choose your workspace look</h2>
+          <p className="page-section__description">
             Pick the visual style that feels right for your workflow. The
             selected theme updates the full app and stays saved across refreshes.
           </p>
@@ -135,34 +116,29 @@ export default async function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Preferences
-          </p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight text-zinc-950">
-            Workspace preferences
-          </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-600">
+        <section className="page-section">
+          <p className="page-section__eyebrow">Preferences</p>
+          <h2 className="page-section__title">Workspace preferences</h2>
+          <p className="page-section__description">
             These remaining controls are intentionally lightweight for MVP. They
             show where personal workspace settings will continue to grow.
           </p>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <article className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-              <p className="text-sm font-medium text-zinc-900">
+            <article className="surface-subtle">
+              <p className="text-sm font-medium text-foreground">
                 Default content type
               </p>
-              <p className="mt-2 text-sm leading-6 text-zinc-600">
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 Coming soon. You will be able to choose the content type that
                 new projects start with.
               </p>
             </article>
 
-            <article className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-              <p className="text-sm font-medium text-zinc-900">Timezone</p>
-              <p className="mt-2 text-sm leading-6 text-zinc-600">
-                Coming soon. Calendar and scheduling defaults will be shown
-                here.
+            <article className="surface-subtle">
+              <p className="text-sm font-medium text-foreground">Timezone</p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Coming soon. Calendar and scheduling defaults will be shown here.
               </p>
             </article>
           </div>

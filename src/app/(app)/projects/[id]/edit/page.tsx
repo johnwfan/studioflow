@@ -2,6 +2,8 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
+import SubmitButton from "@/components/ui/submit-button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -134,50 +136,45 @@ export default async function EditProjectPage({
     revalidatePath("/dashboard");
     revalidatePath("/calendar");
     revalidatePath("/workflow");
-    redirect(`/projects/${updatedProject.id}`);
+    redirect(`/projects/${updatedProject.id}?updated=1`);
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-10 sm:px-8 lg:px-10">
-        <header className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Edit Project
-          </p>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
-            {project.title}
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-zinc-600 sm:text-base">
-            Update the core details for this project without adding extra
-            workflow complexity yet.
-          </p>
-        </header>
-
-        <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-semibold tracking-tight text-zinc-950">
-                Project details
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-zinc-600">
-                Edit the title, planning notes, and schedule in one place.
+    <div className="page-shell">
+      <div className="page-shell__inner page-shell__inner--narrow">
+        <header className="page-header">
+          <div className="page-header__content">
+            <div className="page-header__body">
+              <p className="page-header__eyebrow">Edit Project</p>
+              <h1 className="page-header__title">{project.title}</h1>
+              <p className="page-header__description">
+                Update the core details for this project without adding extra
+                workflow complexity yet.
               </p>
             </div>
 
-            <Link
-              href={`/projects/${project.id}`}
-              className="text-sm font-medium text-zinc-600 transition hover:text-zinc-950"
-            >
-              Back to project
-            </Link>
+            <div className="page-header__actions">
+              <Button asChild variant="outline" size="lg">
+                <Link href={`/projects/${project.id}`}>Back to project</Link>
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <section className="page-section">
+          <div className="page-section__header">
+            <div>
+              <p className="page-section__eyebrow">Project Details</p>
+              <h2 className="page-section__title">Refine the plan</h2>
+              <p className="page-section__description">
+                Edit the title, planning notes, and schedule in one place.
+              </p>
+            </div>
           </div>
 
           <form action={updateProject} className="mt-8 space-y-6">
             <div className="space-y-2">
-              <label
-                htmlFor="title"
-                className="text-sm font-medium text-zinc-800"
-              >
+              <label htmlFor="title" className="text-sm font-medium text-foreground">
                 Title
               </label>
               <input
@@ -186,10 +183,10 @@ export default async function EditProjectPage({
                 type="text"
                 required
                 defaultValue={project.title}
-                className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                className="ui-input"
               />
               {titleError ? (
-                <p className="text-sm text-red-600">
+                <p className="ui-error-text">
                   Title is required before you can save this project.
                 </p>
               ) : null}
@@ -197,17 +194,14 @@ export default async function EditProjectPage({
 
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <label
-                  htmlFor="status"
-                  className="text-sm font-medium text-zinc-800"
-                >
+                <label htmlFor="status" className="text-sm font-medium text-foreground">
                   Status
                 </label>
                 <select
                   id="status"
                   name="status"
                   defaultValue={project.status}
-                  className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                  className="ui-select"
                 >
                   {statusOptions.map((option) => (
                     <option key={option} value={option}>
@@ -220,7 +214,7 @@ export default async function EditProjectPage({
               <div className="space-y-2">
                 <label
                   htmlFor="contentType"
-                  className="text-sm font-medium text-zinc-800"
+                  className="text-sm font-medium text-foreground"
                 >
                   Content type
                 </label>
@@ -228,7 +222,7 @@ export default async function EditProjectPage({
                   id="contentType"
                   name="contentType"
                   defaultValue={project.contentType}
-                  className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                  className="ui-select"
                 >
                   {contentTypeOptions.map((option) => (
                     <option key={option} value={option}>
@@ -242,7 +236,7 @@ export default async function EditProjectPage({
             <div className="space-y-2">
               <label
                 htmlFor="description"
-                className="text-sm font-medium text-zinc-800"
+                className="text-sm font-medium text-foreground"
               >
                 Description
               </label>
@@ -251,15 +245,12 @@ export default async function EditProjectPage({
                 name="description"
                 rows={4}
                 defaultValue={project.description ?? ""}
-                className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm leading-6 text-zinc-900 shadow-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                className="ui-textarea"
               />
             </div>
 
             <div className="space-y-2">
-              <label
-                htmlFor="notes"
-                className="text-sm font-medium text-zinc-800"
-              >
+              <label htmlFor="notes" className="text-sm font-medium text-foreground">
                 Notes
               </label>
               <textarea
@@ -267,14 +258,14 @@ export default async function EditProjectPage({
                 name="notes"
                 rows={6}
                 defaultValue={project.notes ?? ""}
-                className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm leading-6 text-zinc-900 shadow-sm outline-none transition placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                className="ui-textarea"
               />
             </div>
 
             <div className="space-y-2">
               <label
                 htmlFor="publishDate"
-                className="text-sm font-medium text-zinc-800"
+                className="text-sm font-medium text-foreground"
               >
                 Publish date
               </label>
@@ -283,26 +274,20 @@ export default async function EditProjectPage({
                 name="publishDate"
                 type="datetime-local"
                 defaultValue={formatDateTimeLocal(project.publishDate)}
-                className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+                className="ui-input"
               />
-              <p className="text-sm text-zinc-500">
+              <p className="ui-help-text">
                 Leave this blank if the project should not be scheduled yet.
               </p>
             </div>
 
-            <div className="flex flex-col gap-3 border-t border-zinc-200 pt-6 sm:flex-row sm:items-center sm:justify-end">
-              <Link
-                href={`/projects/${project.id}`}
-                className="inline-flex h-11 items-center justify-center rounded-2xl border border-zinc-300 px-5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
-              >
-                Cancel
-              </Link>
-              <button
-                type="submit"
-                className="inline-flex h-11 items-center justify-center rounded-2xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
-              >
+            <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
+              <Button asChild variant="outline" size="lg">
+                <Link href={`/projects/${project.id}`}>Cancel</Link>
+              </Button>
+              <SubmitButton size="lg" pendingLabel="Saving changes...">
                 Save changes
-              </button>
+              </SubmitButton>
             </div>
           </form>
         </section>

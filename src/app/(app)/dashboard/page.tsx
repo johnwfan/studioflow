@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -43,12 +44,8 @@ export default async function DashboardPage() {
 
   const [projects, tasks] = await Promise.all([
     prisma.project.findMany({
-      where: {
-        userId,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
+      where: { userId },
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         title: true,
@@ -66,13 +63,9 @@ export default async function DashboardPage() {
     }),
     prisma.task.findMany({
       where: {
-        project: {
-          userId,
-        },
+        project: { userId },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         text: true,
@@ -146,84 +139,57 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10 sm:px-8 lg:px-10">
-        <header className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-                Workspace Snapshot
-              </p>
-              <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
-                Dashboard
-              </h1>
-              <p className="mt-3 text-sm leading-7 text-zinc-600 sm:text-base">
-                Your home base for seeing what is in motion, what needs
-                attention next, and what is coming up on the publishing
-                schedule.
+    <div className="page-shell">
+      <div className="page-shell__inner">
+        <header className="page-header page-header--hero">
+          <div className="page-header__content">
+            <div className="page-header__body">
+              <p className="page-header__eyebrow">Workspace Snapshot</p>
+              <h1 className="page-header__title">Dashboard</h1>
+              <p className="page-header__description">
+                Your home base for seeing what is moving, what needs attention
+                next, and what is coming up on the publishing schedule.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <Link
-                href="/projects"
-                className="inline-flex h-11 items-center justify-center rounded-2xl border border-zinc-300 px-5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
-              >
-                View Projects
-              </Link>
-              <Link
-                href="/projects/new"
-                className="inline-flex h-11 items-center justify-center rounded-2xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-zinc-800"
-              >
-                New Project
-              </Link>
+            <div className="page-header__actions">
+              <Button asChild variant="outline" size="lg">
+                <Link href="/projects">View projects</Link>
+              </Button>
+              <Button asChild size="lg">
+                <Link href="/projects/new">New project</Link>
+              </Button>
             </div>
           </div>
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {summaryCards.map((card) => (
-            <article
-              key={card.label}
-              className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm"
-            >
-              <p className="text-sm font-medium text-zinc-500">{card.label}</p>
-              <p className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950">
-                {card.value}
-              </p>
-              <p className="mt-3 text-sm leading-6 text-zinc-600">
-                {card.description}
-              </p>
+            <article key={card.label} className="metric-card">
+              <p className="metric-card__label">{card.label}</p>
+              <p className="metric-card__value">{card.value}</p>
+              <p className="metric-card__description">{card.description}</p>
             </article>
           ))}
         </section>
 
         <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-          <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-            <div className="flex items-center justify-between gap-4">
+          <section className="page-section">
+            <div className="page-section__header">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-                  Next Up
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">
-                  Upcoming Schedule
-                </h2>
+                <p className="page-section__eyebrow">Next Up</p>
+                <h2 className="page-section__title">Upcoming Schedule</h2>
               </div>
 
-              <Link
-                href="/calendar"
-                className="text-sm font-medium text-zinc-600 transition hover:text-zinc-950"
-              >
-                View calendar
-              </Link>
+              <Button asChild variant="ghost">
+                <Link href="/calendar">View calendar</Link>
+              </Button>
             </div>
 
             {upcomingProjects.length === 0 ? (
-              <div className="mt-6 rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-6">
-                <h3 className="text-base font-semibold text-zinc-950">
-                  Nothing is scheduled yet
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-zinc-600">
+              <div className="surface-empty mt-6">
+                <h3 className="surface-empty__title">Nothing is scheduled yet</h3>
+                <p className="surface-empty__description">
                   Projects with a publish date will show up here in
                   chronological order.
                 </p>
@@ -237,43 +203,43 @@ export default async function DashboardPage() {
                     <Link
                       key={project.id}
                       href={`/projects/${project.id}`}
-                      className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-5 transition hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+                      className="list-card block"
                     >
                       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                         <div className="min-w-0 flex-1">
-                          <h3 className="text-base font-semibold text-zinc-950">
+                          <h3 className="text-base font-semibold text-foreground">
                             {project.title}
                           </h3>
                           <div className="mt-3 flex flex-wrap gap-2">
-                            <span className="rounded-full bg-zinc-200 px-3 py-1 text-xs font-medium text-zinc-700">
+                            <span className="chip">
                               {formatEnumLabel(project.status)}
                             </span>
-                            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200">
+                            <span className="chip">
                               {formatEnumLabel(project.contentType)}
                             </span>
                           </div>
 
                           <div className="mt-4">
-                            <div className="flex items-center justify-between gap-3 text-sm text-zinc-600">
+                            <div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
                               <span>Task progress</span>
                               <span>{taskProgress}%</span>
                             </div>
-                            <div className="mt-2 h-2 rounded-full bg-zinc-200">
+                            <div className="progress-track">
                               <div
-                                className="h-2 rounded-full bg-zinc-900 transition-all"
+                                className="progress-bar"
                                 style={{ width: `${taskProgress}%` }}
                               />
                             </div>
                           </div>
                         </div>
 
-                        <div className="shrink-0 text-sm text-zinc-600 md:text-right">
-                          <p className="font-medium text-zinc-900">
+                        <div className="shrink-0 text-sm text-muted-foreground md:text-right">
+                          <p className="font-medium text-foreground">
                             {project.publishDate
                               ? formatDateTime(project.publishDate)
                               : "Not scheduled"}
                           </p>
-                          <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
+                          <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
                             Publish date
                           </p>
                         </div>
@@ -285,51 +251,41 @@ export default async function DashboardPage() {
             )}
           </section>
 
-          <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-            <div className="flex items-center justify-between gap-4">
+          <section className="page-section">
+            <div className="page-section__header">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-                  Tasks
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">
-                  Open Task Overview
-                </h2>
+                <p className="page-section__eyebrow">Tasks</p>
+                <h2 className="page-section__title">Open Task Overview</h2>
               </div>
-              <p className="text-sm text-zinc-500">
-                {openTasks.length} open
-              </p>
+              <p className="text-sm text-muted-foreground">{openTasks.length} open</p>
             </div>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <article className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-                <p className="text-sm font-medium text-zinc-500">Open tasks</p>
-                <p className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950">
+              <article className="surface-subtle">
+                <p className="text-sm font-medium text-muted-foreground">Open tasks</p>
+                <p className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
                   {openTasks.length}
                 </p>
-                <p className="mt-2 text-sm leading-6 text-zinc-600">
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   Active next steps still waiting to be finished.
                 </p>
               </article>
 
-              <article className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-                <p className="text-sm font-medium text-zinc-500">
-                  Avg. progress
-                </p>
-                <p className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950">
+              <article className="surface-subtle">
+                <p className="text-sm font-medium text-muted-foreground">Avg. progress</p>
+                <p className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
                   {averageProjectProgress}%
                 </p>
-                <p className="mt-2 text-sm leading-6 text-zinc-600">
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   Average task completion across your projects.
                 </p>
               </article>
             </div>
 
             {taskPreview.length === 0 ? (
-              <div className="mt-6 rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-6">
-                <h3 className="text-base font-semibold text-zinc-950">
-                  No open tasks yet
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-zinc-600">
+              <div className="surface-empty mt-6">
+                <h3 className="surface-empty__title">No open tasks yet</h3>
+                <p className="surface-empty__description">
                   Once you add tasks to projects, the most recent open items
                   will show up here.
                 </p>
@@ -340,12 +296,10 @@ export default async function DashboardPage() {
                   <Link
                     key={task.id}
                     href={`/projects/${task.project.id}`}
-                    className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-4 transition hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+                    className="list-card block"
                   >
-                    <p className="text-sm font-semibold text-zinc-950">
-                      {task.text}
-                    </p>
-                    <p className="mt-2 text-xs uppercase tracking-wide text-zinc-500">
+                    <p className="text-sm font-semibold text-foreground">{task.text}</p>
+                    <p className="mt-2 text-xs uppercase tracking-wide text-muted-foreground">
                       {task.project.title}
                     </p>
                   </Link>
@@ -355,22 +309,18 @@ export default async function DashboardPage() {
           </section>
         </div>
 
-        <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-              Activity
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">
-              Recent Projects
-            </h2>
+        <section className="page-section">
+          <div className="page-section__header">
+            <div>
+              <p className="page-section__eyebrow">Activity</p>
+              <h2 className="page-section__title">Recent Projects</h2>
+            </div>
           </div>
 
           {recentProjects.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-6">
-              <h3 className="text-base font-semibold text-zinc-950">
-                No projects yet
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-zinc-600">
+            <div className="surface-empty mt-6">
+              <h3 className="surface-empty__title">No projects yet</h3>
+              <p className="surface-empty__description">
                 Your recently updated work will appear here once projects start
                 moving through the pipeline.
               </p>
@@ -384,37 +334,37 @@ export default async function DashboardPage() {
                   <Link
                     key={project.id}
                     href={`/projects/${project.id}`}
-                    className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-5 transition hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+                    className="list-card block"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <h3 className="truncate text-base font-semibold text-zinc-950">
+                        <h3 className="truncate text-base font-semibold text-foreground">
                           {project.title}
                         </h3>
-                        <p className="mt-2 text-xs uppercase tracking-wide text-zinc-500">
+                        <p className="mt-2 text-xs uppercase tracking-wide text-muted-foreground">
                           {formatEnumLabel(project.status)} •{" "}
                           {formatEnumLabel(project.contentType)}
                         </p>
                       </div>
 
                       <div className="shrink-0 text-right">
-                        <p className="text-sm font-medium text-zinc-900">
+                        <p className="text-sm font-medium text-foreground">
                           {formatDate(project.updatedAt)}
                         </p>
-                        <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
+                        <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
                           Updated
                         </p>
                       </div>
                     </div>
 
                     <div className="mt-4">
-                      <div className="flex items-center justify-between gap-3 text-sm text-zinc-600">
+                      <div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
                         <span>Task progress</span>
                         <span>{taskProgress}%</span>
                       </div>
-                      <div className="mt-2 h-2 rounded-full bg-zinc-200">
+                      <div className="progress-track">
                         <div
-                          className="h-2 rounded-full bg-zinc-900 transition-all"
+                          className="progress-bar"
                           style={{ width: `${taskProgress}%` }}
                         />
                       </div>
