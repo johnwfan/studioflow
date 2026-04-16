@@ -410,8 +410,12 @@
     @apply flex min-h-screen bg-background text-foreground;
   }
 
+  .app-shell__sidebar {
+    @apply sticky top-0 h-screen w-72 shrink-0;
+  }
+
   .app-shell__main {
-    @apply flex-1 bg-background;
+    @apply min-w-0 flex-1 bg-background;
   }
 
   .placeholder-page {
@@ -491,10 +495,14 @@
   }
 
   .sidebar {
-    @apply flex h-screen w-72 flex-col border-r px-4 py-4 backdrop-blur;
+    @apply h-full border-r backdrop-blur;
     border-color: var(--sidebar-border);
     background-color: oklch(from var(--sidebar) l c h / 0.84);
     color: var(--sidebar-foreground);
+  }
+
+  .sidebar__inner {
+    @apply flex h-full min-h-0 flex-col px-4 py-4;
   }
 
   .sidebar__brand {
@@ -526,7 +534,7 @@
   }
 
   .sidebar__nav {
-    @apply flex flex-1 flex-col gap-1;
+    @apply flex flex-1 flex-col gap-1 overflow-y-auto;
   }
 
   .sidebar__nav-link {
@@ -565,7 +573,7 @@
   }
 
   .sidebar__workspace {
-    @apply mt-6 rounded-2xl border p-3;
+    @apply mt-6 shrink-0 rounded-2xl border p-3;
     border-color: var(--sidebar-border);
     background-color: var(--sidebar-accent);
   }
