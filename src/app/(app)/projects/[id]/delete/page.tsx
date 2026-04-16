@@ -106,11 +106,6 @@ export default async function DeleteProjectPage({
           <div className="page-header__body">
             <p className="page-header__eyebrow">Delete Project</p>
             <h1 className="page-header__title">Confirm deletion</h1>
-            <p className="page-header__description">
-              This permanently removes{" "}
-              <span className="font-medium text-foreground">{project.title}</span>,
-              along with its tasks and asset links.
-            </p>
           </div>
         </header>
 

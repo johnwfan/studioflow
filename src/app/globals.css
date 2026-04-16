@@ -437,11 +437,11 @@
   }
 
   .page-shell__inner {
-    @apply mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8 sm:px-8 sm:py-10 lg:px-10;
+    @apply mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-8 sm:px-8 sm:py-10 lg:px-10;
   }
 
   .page-shell__inner--wide {
-    @apply max-w-[1600px];
+    @apply max-w-[1760px];
   }
 
   .page-shell__inner--narrow {
@@ -453,20 +453,19 @@
   }
 
   .page-header {
-    @apply rounded-4xl border border-border bg-card px-6 py-6 text-card-foreground shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:px-8 sm:py-8;
+    @apply relative border-b border-border/80 pb-6 text-card-foreground sm:pb-8;
   }
 
   .page-header--hero {
-    @apply relative overflow-hidden;
+    @apply overflow-visible;
   }
 
   .page-header--hero::before {
     content: "";
-    @apply pointer-events-none absolute inset-x-10 top-0 h-28 rounded-full blur-3xl;
+    @apply pointer-events-none absolute left-0 top-0 h-24 w-40 rounded-full blur-3xl;
     background: linear-gradient(
-      90deg,
-      oklch(from var(--ring-soft) l c h / 0),
-      oklch(from var(--ring-soft) l c h / 0.8),
+      135deg,
+      oklch(from var(--ring-soft) l c h / 0.55),
       oklch(from var(--ring-soft) l c h / 0)
     );
   }
@@ -476,19 +475,19 @@
   }
 
   .page-header__body {
-    @apply max-w-3xl;
+    @apply max-w-2xl;
   }
 
   .page-header__eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground;
+    @apply text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground;
   }
 
   .page-header__title {
-    @apply mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl;
+    @apply mt-3 text-3xl font-semibold tracking-[-0.03em] text-foreground sm:text-4xl;
   }
 
   .page-header__description {
-    @apply mt-3 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base;
+    @apply mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base;
   }
 
   .page-header__meta {
@@ -500,7 +499,7 @@
   }
 
   .page-section {
-    @apply rounded-4xl border border-border bg-card p-6 text-card-foreground shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-8;
+    @apply rounded-[1.75rem] border border-border/80 bg-card/70 p-6 text-card-foreground shadow-none sm:p-8;
   }
 
   .page-section__header {
@@ -520,11 +519,11 @@
   }
 
   .surface-subtle {
-    @apply rounded-3xl border border-border bg-muted/65 p-5;
+    @apply rounded-[1.5rem] border border-border/75 bg-muted/45 p-5;
   }
 
   .surface-empty {
-    @apply rounded-3xl border border-dashed border-border bg-muted/55 p-6 text-center;
+    @apply rounded-[1.5rem] border border-dashed border-border/80 bg-muted/35 p-6 text-center;
   }
 
   .surface-empty__title {
@@ -536,7 +535,7 @@
   }
 
   .metric-card {
-    @apply rounded-3xl border border-border bg-card p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)];
+    @apply rounded-[1.5rem] border-l-2 border-t border-r border-b border-border/75 bg-card/75 p-6 shadow-none;
   }
 
   .metric-card__label {
@@ -582,7 +581,7 @@
   }
 
   .list-card {
-    @apply rounded-3xl border border-border bg-muted/55 p-5 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-ring hover:bg-card hover:shadow-[0_12px_32px_-24px_rgba(15,23,42,0.32)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/15;
+    @apply rounded-[1.35rem] border border-border/75 bg-muted/35 p-5 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-ring/80 hover:bg-card/90 hover:shadow-[0_16px_40px_-32px_rgba(15,23,42,0.24)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/15;
   }
 
   .progress-track {
@@ -616,12 +615,12 @@
   .landing-page {
     @apply min-h-screen overflow-hidden bg-background text-foreground;
     background-image:
-      radial-gradient(circle at top, oklch(from var(--ring-soft) l c h / 0.55), transparent 34rem),
+      radial-gradient(circle at top left, oklch(from var(--ring-soft) l c h / 0.35), transparent 26rem),
       linear-gradient(to bottom, oklch(from var(--background) l c h / 1), oklch(from var(--surface-soft) l c h / 1));
   }
 
   .landing-page__section {
-    @apply relative mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-10 sm:px-8 lg:px-10;
+    @apply relative mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-8 sm:px-8 lg:px-10;
   }
 
   .landing-page__nav {
@@ -649,15 +648,15 @@
   }
 
   .landing-page__hero {
-    @apply grid flex-1 items-center gap-12 py-16 lg:grid-cols-[1.08fr_0.92fr] lg:py-20;
+    @apply grid flex-1 items-center gap-14 py-14 lg:grid-cols-[1.05fr_0.95fr] lg:py-18;
   }
 
   .landing-page__eyebrow {
-    @apply inline-flex items-center rounded-full border border-border bg-card/80 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground backdrop-blur;
+    @apply inline-flex items-center border-b border-border/90 pb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground;
   }
 
   .landing-page__title {
-    @apply mt-6 text-5xl font-semibold tracking-tight text-foreground sm:text-6xl lg:text-7xl;
+    @apply mt-7 max-w-3xl text-5xl font-semibold tracking-[-0.05em] text-foreground sm:text-6xl lg:text-[4.75rem];
   }
 
   .landing-page__title-line {
@@ -665,7 +664,7 @@
   }
 
   .landing-page__description {
-    @apply mt-6 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg;
+    @apply mt-7 max-w-xl text-base leading-8 text-muted-foreground sm:text-lg;
   }
 
   .landing-page__actions {
@@ -681,39 +680,19 @@
   }
 
   .landing-page__supporting-note {
-    @apply mt-6 text-sm leading-6 text-muted-foreground;
-  }
-
-  .landing-page__features {
-    @apply mt-12 w-full;
-  }
-
-  .landing-page__feature-grid {
-    @apply grid gap-4 md:grid-cols-3;
-  }
-
-  .landing-page__feature-card {
-    @apply rounded-3xl border border-border bg-card/85 p-6 text-left text-card-foreground shadow-[0_1px_2px_rgba(15,23,42,0.04)] backdrop-blur;
-  }
-
-  .landing-page__feature-title {
-    @apply text-base font-semibold;
-  }
-
-  .landing-page__feature-description {
-    @apply mt-2 text-sm leading-6 text-muted-foreground;
+    @apply mt-8 max-w-md border-l border-border pl-4 text-sm leading-6 text-muted-foreground;
   }
 
   .landing-page__preview {
-    @apply relative;
+    @apply relative self-stretch lg:self-center;
   }
 
   .landing-page__preview-shell {
-    @apply rounded-[2rem] border border-border bg-card/88 p-4 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.5)] backdrop-blur;
+    @apply rounded-[2rem] border border-border/80 bg-card/80 p-5 shadow-[0_28px_80px_-56px_rgba(15,23,42,0.42)];
   }
 
   .landing-page__preview-header {
-    @apply flex items-center justify-between border-b border-border px-3 pb-4;
+    @apply flex flex-col gap-3 border-b border-border/80 px-1 pb-5 sm:flex-row sm:items-center sm:justify-between;
   }
 
   .landing-page__preview-pill {
@@ -721,19 +700,15 @@
   }
 
   .landing-page__preview-grid {
-    @apply mt-4 grid gap-4 lg:grid-cols-[0.95fr_1.05fr];
+    @apply mt-5 grid gap-4;
   }
 
   .landing-page__preview-rail {
-    @apply rounded-[1.5rem] border border-border bg-muted/65 p-4;
-  }
-
-  .landing-page__preview-main {
-    @apply rounded-[1.5rem] border border-border bg-background/80 p-4;
+    @apply grid gap-4 rounded-[1.5rem] border border-border/70 bg-muted/35 p-4;
   }
 
   .landing-page__preview-card {
-    @apply rounded-[1.25rem] border border-border bg-card p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)];
+    @apply rounded-[1.25rem] border border-border/75 bg-card/90 p-5;
   }
 
   .landing-page__preview-stats {

@@ -91,10 +91,6 @@ export default async function ProjectsPage({
             <div className="page-header__body">
               <p className="page-header__eyebrow">Workspace</p>
               <h1 className="page-header__title">Projects</h1>
-              <p className="page-header__description">
-                Manage your content pipeline from idea to published work in one
-                clean workspace.
-              </p>
             </div>
 
             <div className="page-header__actions">

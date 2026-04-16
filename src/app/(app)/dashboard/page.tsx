@@ -146,10 +146,6 @@ export default async function DashboardPage() {
             <div className="page-header__body">
               <p className="page-header__eyebrow">Workspace Snapshot</p>
               <h1 className="page-header__title">Dashboard</h1>
-              <p className="page-header__description">
-                Your home base for seeing what is moving, what needs attention
-                next, and what is coming up on the publishing schedule.
-              </p>
             </div>
 
             <div className="page-header__actions">
@@ -164,8 +160,14 @@ export default async function DashboardPage() {
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {summaryCards.map((card) => (
-            <article key={card.label} className="metric-card">
+          {summaryCards.map((card, index) => (
+            <article
+              key={card.label}
+              className={[
+                "metric-card",
+                index === 0 ? "sm:col-span-2 xl:col-span-2" : "",
+              ].join(" ")}
+            >
               <p className="metric-card__label">{card.label}</p>
               <p className="metric-card__value">{card.value}</p>
               <p className="metric-card__description">{card.description}</p>
@@ -173,7 +175,7 @@ export default async function DashboardPage() {
           ))}
         </section>
 
-        <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="grid gap-8 xl:grid-cols-[1.2fr_0.8fr]">
           <section className="page-section">
             <div className="page-section__header">
               <div>
@@ -260,7 +262,7 @@ export default async function DashboardPage() {
               <p className="text-sm text-muted-foreground">{openTasks.length} open</p>
             </div>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="mt-6 grid gap-4 sm:grid-cols-1">
               <article className="surface-subtle">
                 <p className="text-sm font-medium text-muted-foreground">Open tasks</p>
                 <p className="mt-3 text-3xl font-semibold tracking-tight text-foreground">

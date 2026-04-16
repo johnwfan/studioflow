@@ -94,11 +94,6 @@ export default async function WorkflowPage() {
             <div className="page-header__body">
               <p className="page-header__eyebrow">Production Pipeline</p>
               <h1 className="page-header__title">Workflow Board</h1>
-              <p className="page-header__description">
-                A calm, kanban-style view of your creator pipeline so you can
-                see what is still an idea, what is in production, and what is
-                already scheduled or shipped.
-              </p>
             </div>
 
             <div className="page-header__actions">
@@ -112,18 +107,24 @@ export default async function WorkflowPage() {
           </div>
         </header>
 
-        <section className="overflow-x-auto pb-2">
-          <div className="grid min-w-[1100px] gap-5 xl:grid-cols-6">
+        <section>
+          <div className="overflow-x-auto pb-3">
+            <div className="flex min-w-max gap-5 pr-6">
             {columns.map((column) => (
               <section
                 key={column.key}
-                className="flex min-h-[32rem] flex-col rounded-4xl border border-border bg-card p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+                className="flex min-h-[34rem] w-[300px] flex-none flex-col rounded-[1.75rem] border border-border/80 bg-card/75 p-5"
               >
-                <div className="border-b border-border pb-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <h2 className="text-lg font-semibold text-foreground">
+                <div className="border-b border-border/80 pb-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                        Stage
+                      </p>
+                      <h2 className="mt-2 text-lg font-semibold tracking-tight text-foreground">
                       {column.label}
-                    </h2>
+                      </h2>
+                    </div>
                     <span className="chip">{column.projects.length}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -148,19 +149,16 @@ export default async function WorkflowPage() {
                       <Link
                         key={project.id}
                         href={`/projects/${project.id}`}
-                        className="list-card block"
+                        className="list-card block min-h-[11.5rem]"
                       >
-                        <div className="flex items-start justify-between gap-3">
-                          <h3 className="text-sm font-semibold leading-6 text-foreground">
+                        <div className="min-w-0">
+                          <h3 className="text-base font-semibold leading-6 text-foreground">
                             {project.title}
                           </h3>
-                          <span className="chip shrink-0">
-                            {formatContentType(project.contentType)}
-                          </span>
                         </div>
 
                         {project.description ? (
-                          <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
+                          <p className="mt-3 line-clamp-4 text-sm leading-6 text-muted-foreground">
                             {project.description}
                           </p>
                         ) : (
@@ -169,9 +167,16 @@ export default async function WorkflowPage() {
                           </p>
                         )}
 
-                        <div className="mt-4 flex items-center justify-between gap-3 text-xs uppercase tracking-wide text-muted-foreground">
+                        <div className="mt-5 flex flex-wrap items-center gap-2">
+                          <span className="chip">{formatContentType(project.contentType)}</span>
+                          {project.publishDate ? (
+                            <span className="chip">{formatDate(project.publishDate)}</span>
+                          ) : null}
+                        </div>
+
+                        <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/70 pt-4 text-xs uppercase tracking-[0.2em] text-muted-foreground">
                           <span>{column.label}</span>
-                          <span>{formatDate(project.publishDate) ?? "No publish date"}</span>
+                          <span>{project.publishDate ? "Scheduled" : "Unscheduled"}</span>
                         </div>
                       </Link>
                     ))}
@@ -179,6 +184,7 @@ export default async function WorkflowPage() {
                 )}
               </section>
             ))}
+            </div>
           </div>
         </section>
       </div>

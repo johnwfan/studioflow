@@ -4,24 +4,6 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
-const featureCards = [
-  {
-    title: "Capture ideas without losing momentum",
-    description:
-      "Start with a rough concept, keep the notes nearby, and turn it into a real production plan later.",
-  },
-  {
-    title: "See your production pipeline clearly",
-    description:
-      "Track what is still an idea, what is in progress, and what is already lined up to publish.",
-  },
-  {
-    title: "Keep the whole workspace calm",
-    description:
-      "Projects, tasks, and publishing plans stay in one place so the app feels like a home base instead of another inbox.",
-  },
-];
-
 export default async function HomePage() {
   const { userId } = await auth();
 
@@ -66,12 +48,6 @@ export default async function HomePage() {
               <span className="landing-page__title-line">shipped content system.</span>
             </h1>
 
-            <p className="landing-page__description">
-              Studioflow brings planning, production, and publishing into one
-              minimal workspace so you can move from rough concept to live
-              content with less friction and more clarity.
-            </p>
-
             <div className="landing-page__actions">
               {userId ? (
                 <>
@@ -100,22 +76,9 @@ export default async function HomePage() {
             </div>
 
             <p className="landing-page__supporting-note">
-              Built for creators who want a product-like workspace instead of a
-              patchwork of docs, notes, and spreadsheets.
+              Built for creators who want one clear workspace instead of a
+              patchwork of docs, notes, and half-finished planning systems.
             </p>
-
-            <div className="landing-page__features">
-              <div className="landing-page__feature-grid">
-                {featureCards.map((feature) => (
-                  <article key={feature.title} className="landing-page__feature-card">
-                    <h2 className="landing-page__feature-title">{feature.title}</h2>
-                    <p className="landing-page__feature-description">
-                      {feature.description}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </div>
           </div>
 
           <div className="landing-page__preview">
@@ -133,57 +96,15 @@ export default async function HomePage() {
               <div className="landing-page__preview-grid">
                 <div className="landing-page__preview-rail">
                   <div className="landing-page__preview-card">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-                        <FolderKanban className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">Projects</p>
-                        <p className="text-sm text-muted-foreground">12 active items</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="landing-page__preview-card mt-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
-                        <Columns3 className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">Workflow</p>
-                        <p className="text-sm text-muted-foreground">
-                          Idea to published in one board
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="landing-page__preview-card mt-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
-                        <CalendarDays className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">Calendar</p>
-                        <p className="text-sm text-muted-foreground">
-                          Publishing dates stay visible
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="landing-page__preview-main">
-                  <div className="landing-page__preview-card">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
                       Dashboard
                     </p>
-                    <h3 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
+                    <h3 className="mt-3 max-w-sm text-2xl font-semibold tracking-tight text-foreground">
                       Work that feels organized before it feels busy.
                     </h3>
-                    <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                      Keep priorities visible, upcoming deadlines close, and
-                      next actions simple.
+                    <p className="mt-3 max-w-md text-sm leading-6 text-muted-foreground">
+                      Keep priorities visible, upcoming deadlines close, and next
+                      actions simple.
                     </p>
 
                     <div className="landing-page__preview-stats">
@@ -202,10 +123,54 @@ export default async function HomePage() {
                     </div>
                   </div>
 
-                  <div className="landing-page__preview-card mt-4">
-                    <div className="flex items-center justify-between gap-3">
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="landing-page__preview-card">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+                          <FolderKanban className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-foreground">Projects</p>
+                          <p className="text-sm text-muted-foreground">12 active items</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="landing-page__preview-card">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
+                          <Columns3 className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-foreground">Workflow</p>
+                          <p className="text-sm text-muted-foreground">
+                            Ideas to published at a glance
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="landing-page__preview-card">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
+                          <CalendarDays className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-foreground">Calendar</p>
+                          <p className="text-sm text-muted-foreground">
+                            Publishing plans stay visible
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="landing-page__preview-card">
+                    <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="text-sm font-semibold text-foreground">Upcoming publish</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          Upcoming publish
+                        </p>
                         <p className="mt-1 text-sm text-muted-foreground">
                           Weekly studio vlog
                         </p>
@@ -213,13 +178,24 @@ export default async function HomePage() {
                       <span className="chip">Apr 21</span>
                     </div>
 
-                    <div className="mt-4">
-                      <div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
-                        <span>Production progress</span>
-                        <span>72%</span>
+                    <div className="mt-5 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+                      <div>
+                        <div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
+                          <span>Production progress</span>
+                          <span>72%</span>
+                        </div>
+                        <div className="progress-track">
+                          <div className="progress-bar" style={{ width: "72%" }} />
+                        </div>
                       </div>
-                      <div className="progress-track">
-                        <div className="progress-bar" style={{ width: "72%" }} />
+
+                      <div className="border-l border-border pl-4">
+                        <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
+                          In progress
+                        </p>
+                        <p className="mt-2 text-lg font-semibold text-foreground">
+                          Edit locked
+                        </p>
                       </div>
                     </div>
                   </div>

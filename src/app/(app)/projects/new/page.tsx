@@ -102,10 +102,6 @@ export default async function NewProjectPage({
             <div className="page-header__body">
               <p className="page-header__eyebrow">Create Project</p>
               <h1 className="page-header__title">New project</h1>
-              <p className="page-header__description">
-                Capture a new idea, add a little production context, and send it
-                straight into your Studioflow workspace.
-              </p>
             </div>
 
             <div className="page-header__actions">

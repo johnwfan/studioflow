@@ -30,10 +30,6 @@ export default async function SettingsPage() {
           <div className="page-header__body">
             <p className="page-header__eyebrow">Workspace Settings</p>
             <h1 className="page-header__title">Settings</h1>
-            <p className="page-header__description">
-              Manage your account details and keep an eye on the settings that
-              shape your Studioflow workspace.
-            </p>
           </div>
         </header>
 

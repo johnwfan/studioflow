@@ -294,9 +294,6 @@ export default async function ProjectDetailPage({
             <div className="page-header__body">
               <p className="page-header__eyebrow">Project Workspace</p>
               <h1 className="page-header__title">{project.title}</h1>
-              <p className="page-header__description">
-                {project.description || "No description has been added yet."}
-              </p>
 
               <div className="page-header__meta">
                 <span className="chip chip--strong">

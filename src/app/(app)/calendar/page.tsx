@@ -96,10 +96,6 @@ export default async function CalendarPage() {
             <div className="page-header__body">
               <p className="page-header__eyebrow">Publishing Schedule</p>
               <h1 className="page-header__title">Calendar</h1>
-              <p className="page-header__description">
-                A simple schedule view of upcoming content so you can see what is
-                planned, when it goes live, and how your pipeline is lining up.
-              </p>
             </div>
 
             <div className="page-header__actions">
