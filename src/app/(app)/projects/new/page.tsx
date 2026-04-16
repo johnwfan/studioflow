@@ -2,9 +2,8 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-
-const DEV_USER_ID = "studioflow-dev-user";
 
 const statusOptions = [
   "IDEA",
@@ -48,20 +47,7 @@ async function createProject(formData: FormData) {
     redirect("/projects/new?error=title");
   }
 
-  await prisma.user.upsert({
-    where: {
-      id: DEV_USER_ID,
-    },
-    update: {
-      email: "dev@studioflow.local",
-      name: "Studioflow Dev",
-    },
-    create: {
-      id: DEV_USER_ID,
-      email: "dev@studioflow.local",
-      name: "Studioflow Dev",
-    },
-  });
+  const userId = await requireUserId();
 
   const project = await prisma.project.create({
     data: {
@@ -83,13 +69,14 @@ async function createProject(formData: FormData) {
         typeof publishDate === "string" && publishDate
           ? new Date(publishDate)
           : null,
-      userId: DEV_USER_ID,
+      userId,
     },
   });
 
   revalidatePath("/projects");
   revalidatePath("/dashboard");
   revalidatePath("/calendar");
+  revalidatePath("/workflow");
   redirect(`/projects/${project.id}`);
 }
 

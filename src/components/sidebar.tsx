@@ -1,5 +1,6 @@
 "use client";
 
+import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -99,6 +100,26 @@ export default function Sidebar() {
         <p className="sidebar__workspace-description">
           plan, track, and ship your content in one place.
         </p>
+
+        <div className="mt-5 flex items-center justify-between rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-3 dark:border-zinc-800 dark:bg-zinc-900">
+          <div>
+            <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+              Signed in
+            </p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              manage your account
+            </p>
+          </div>
+
+          <UserButton
+            appearance={{
+              elements: {
+                userButtonAvatarBox: "h-10 w-10",
+              },
+            }}
+            afterSignOutUrl="/"
+          />
+        </div>
       </div>
     </aside>
   );

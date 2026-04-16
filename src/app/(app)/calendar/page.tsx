@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 function getDateKey(date: Date) {
@@ -35,8 +36,11 @@ function formatEnumLabel(value: string) {
 }
 
 export default async function CalendarPage() {
+  const userId = await requireUserId();
+
   const scheduledProjects = await prisma.project.findMany({
     where: {
+      userId,
       publishDate: {
         not: null,
       },

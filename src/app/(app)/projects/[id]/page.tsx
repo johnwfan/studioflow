@@ -1,7 +1,8 @@
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
+import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 type ProjectDetailPageProps = {
@@ -43,14 +44,25 @@ function getLinkHostname(url: string) {
   }
 }
 
+function getTaskProgress(tasks: Array<{ completed: boolean }>) {
+  if (tasks.length === 0) {
+    return 0;
+  }
+
+  const completedTaskCount = tasks.filter((task) => task.completed).length;
+  return Math.round((completedTaskCount / tasks.length) * 100);
+}
+
 export default async function ProjectDetailPage({
   params,
 }: ProjectDetailPageProps) {
   const { id } = await params;
+  const userId = await requireUserId();
 
-  const project = await prisma.project.findUnique({
+  const project = await prisma.project.findFirst({
     where: {
       id,
+      userId,
     },
     include: {
       tasks: {
@@ -70,36 +82,10 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
-  async function deleteProject() {
-    "use server";
-
-    await prisma.$transaction([
-      prisma.task.deleteMany({
-        where: {
-          projectId: id,
-        },
-      }),
-      prisma.assetLink.deleteMany({
-        where: {
-          projectId: id,
-        },
-      }),
-      prisma.project.delete({
-        where: {
-          id,
-        },
-      }),
-    ]);
-
-    revalidatePath("/projects");
-    revalidatePath("/dashboard");
-    revalidatePath("/calendar");
-    redirect("/projects");
-  }
-
   async function createTask(formData: FormData) {
     "use server";
 
+    const currentUserId = await requireUserId();
     const text = formData.get("text");
     const trimmedText = typeof text === "string" ? text.trim() : "";
 
@@ -107,20 +93,36 @@ export default async function ProjectDetailPage({
       return;
     }
 
+    const ownedProject = await prisma.project.findFirst({
+      where: {
+        id,
+        userId: currentUserId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!ownedProject) {
+      notFound();
+    }
+
     await prisma.task.create({
       data: {
         text: trimmedText,
-        projectId: id,
+        projectId: ownedProject.id,
       },
     });
 
     revalidatePath(`/projects/${id}`);
     revalidatePath("/dashboard");
+    revalidatePath("/projects");
   }
 
   async function toggleTaskCompletion(formData: FormData) {
     "use server";
 
+    const currentUserId = await requireUserId();
     const taskId = formData.get("taskId");
     const completed = formData.get("completed");
 
@@ -128,9 +130,26 @@ export default async function ProjectDetailPage({
       return;
     }
 
-    await prisma.task.update({
+    const ownedTask = await prisma.task.findFirst({
       where: {
         id: taskId,
+        project: {
+          id,
+          userId: currentUserId,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!ownedTask) {
+      notFound();
+    }
+
+    await prisma.task.update({
+      where: {
+        id: ownedTask.id,
       },
       data: {
         completed: completed === "true",
@@ -139,11 +158,51 @@ export default async function ProjectDetailPage({
 
     revalidatePath(`/projects/${id}`);
     revalidatePath("/dashboard");
+    revalidatePath("/projects");
+  }
+
+  async function deleteTask(formData: FormData) {
+    "use server";
+
+    const currentUserId = await requireUserId();
+    const taskId = formData.get("taskId");
+
+    if (typeof taskId !== "string") {
+      return;
+    }
+
+    const ownedTask = await prisma.task.findFirst({
+      where: {
+        id: taskId,
+        project: {
+          id,
+          userId: currentUserId,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!ownedTask) {
+      notFound();
+    }
+
+    await prisma.task.delete({
+      where: {
+        id: ownedTask.id,
+      },
+    });
+
+    revalidatePath(`/projects/${id}`);
+    revalidatePath("/dashboard");
+    revalidatePath("/projects");
   }
 
   async function createAssetLink(formData: FormData) {
     "use server";
 
+    const currentUserId = await requireUserId();
     const label = formData.get("label");
     const url = formData.get("url");
 
@@ -154,11 +213,61 @@ export default async function ProjectDetailPage({
       return;
     }
 
+    const ownedProject = await prisma.project.findFirst({
+      where: {
+        id,
+        userId: currentUserId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!ownedProject) {
+      notFound();
+    }
+
     await prisma.assetLink.create({
       data: {
         label: trimmedLabel,
         url: trimmedUrl,
-        projectId: id,
+        projectId: ownedProject.id,
+      },
+    });
+
+    revalidatePath(`/projects/${id}`);
+  }
+
+  async function deleteAssetLink(formData: FormData) {
+    "use server";
+
+    const currentUserId = await requireUserId();
+    const assetLinkId = formData.get("assetLinkId");
+
+    if (typeof assetLinkId !== "string") {
+      return;
+    }
+
+    const ownedAssetLink = await prisma.assetLink.findFirst({
+      where: {
+        id: assetLinkId,
+        project: {
+          id,
+          userId: currentUserId,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!ownedAssetLink) {
+      notFound();
+    }
+
+    await prisma.assetLink.delete({
+      where: {
+        id: ownedAssetLink.id,
       },
     });
 
@@ -167,6 +276,7 @@ export default async function ProjectDetailPage({
 
   const completedTaskCount = project.tasks.filter((task) => task.completed).length;
   const openTaskCount = project.tasks.length - completedTaskCount;
+  const taskProgress = getTaskProgress(project.tasks);
 
   return (
     <div className="min-h-screen bg-zinc-50">
@@ -193,6 +303,9 @@ export default async function ProjectDetailPage({
                 </span>
                 <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700">
                   {openTaskCount} open {openTaskCount === 1 ? "task" : "tasks"}
+                </span>
+                <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700">
+                  {taskProgress}% complete
                 </span>
               </div>
             </div>
@@ -260,8 +373,15 @@ export default async function ProjectDetailPage({
                 </div>
 
                 <p className="text-sm text-zinc-500">
-                  {completedTaskCount} completed • {openTaskCount} open
+                  {completedTaskCount} completed • {openTaskCount} open • {taskProgress}% done
                 </p>
+              </div>
+
+              <div className="mt-5 h-2 rounded-full bg-zinc-100">
+                <div
+                  className="h-2 rounded-full bg-zinc-900 transition-all"
+                  style={{ width: `${taskProgress}%` }}
+                />
               </div>
 
               <form action={createTask} className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -294,43 +414,57 @@ export default async function ProjectDetailPage({
                   {project.tasks.map((task) => (
                     <article
                       key={task.id}
-                      className="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                      className="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-4"
                     >
-                      <div className="min-w-0">
-                        <p
-                          className={[
-                            "text-sm font-medium",
-                            task.completed
-                              ? "text-zinc-500 line-through"
-                              : "text-zinc-900",
-                          ].join(" ")}
-                        >
-                          {task.text}
-                        </p>
-                        <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
-                          {task.completed ? "Completed" : "Open"}
-                        </p>
-                      </div>
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="min-w-0">
+                          <p
+                            className={[
+                              "text-sm font-medium",
+                              task.completed
+                                ? "text-zinc-500 line-through"
+                                : "text-zinc-900",
+                            ].join(" ")}
+                          >
+                            {task.text}
+                          </p>
+                          <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
+                            {task.completed ? "Completed" : "Open"}
+                          </p>
+                        </div>
 
-                      <form action={toggleTaskCompletion}>
-                        <input type="hidden" name="taskId" value={task.id} />
-                        <input
-                          type="hidden"
-                          name="completed"
-                          value={task.completed ? "false" : "true"}
-                        />
-                        <button
-                          type="submit"
-                          className={[
-                            "inline-flex h-10 items-center justify-center rounded-2xl px-4 text-sm font-medium transition",
-                            task.completed
-                              ? "border border-zinc-300 text-zinc-700 hover:bg-zinc-100"
-                              : "bg-zinc-900 text-white hover:bg-zinc-800",
-                          ].join(" ")}
-                        >
-                          {task.completed ? "Mark open" : "Mark complete"}
-                        </button>
-                      </form>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <form action={toggleTaskCompletion}>
+                            <input type="hidden" name="taskId" value={task.id} />
+                            <input
+                              type="hidden"
+                              name="completed"
+                              value={task.completed ? "false" : "true"}
+                            />
+                            <button
+                              type="submit"
+                              className={[
+                                "inline-flex h-10 items-center justify-center rounded-2xl px-4 text-sm font-medium transition",
+                                task.completed
+                                  ? "border border-zinc-300 text-zinc-700 hover:bg-zinc-100"
+                                  : "bg-zinc-900 text-white hover:bg-zinc-800",
+                              ].join(" ")}
+                            >
+                              {task.completed ? "Mark open" : "Mark complete"}
+                            </button>
+                          </form>
+
+                          <form action={deleteTask}>
+                            <input type="hidden" name="taskId" value={task.id} />
+                            <button
+                              type="submit"
+                              className="inline-flex h-10 items-center justify-center rounded-2xl border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
+                            >
+                              Delete
+                            </button>
+                          </form>
+                        </div>
+                      </div>
                     </article>
                   ))}
                 </div>
@@ -383,28 +517,43 @@ export default async function ProjectDetailPage({
               ) : (
                 <div className="mt-6 space-y-3">
                   {project.assetLinks.map((assetLink) => (
-                    <a
+                    <div
                       key={assetLink.id}
-                      href={assetLink.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-4 transition hover:border-zinc-300 hover:bg-white hover:shadow-sm"
+                      className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4"
                     >
-                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="min-w-0">
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <a
+                          href={assetLink.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block min-w-0 flex-1 transition hover:text-zinc-950"
+                        >
                           <p className="text-sm font-semibold text-zinc-950">
                             {assetLink.label}
                           </p>
                           <p className="mt-1 truncate text-sm text-zinc-600">
                             {assetLink.url}
                           </p>
-                        </div>
+                          <p className="mt-2 text-xs uppercase tracking-wide text-zinc-500">
+                            {getLinkHostname(assetLink.url)}
+                          </p>
+                        </a>
 
-                        <span className="text-xs uppercase tracking-wide text-zinc-500">
-                          {getLinkHostname(assetLink.url)}
-                        </span>
+                        <form action={deleteAssetLink}>
+                          <input
+                            type="hidden"
+                            name="assetLinkId"
+                            value={assetLink.id}
+                          />
+                          <button
+                            type="submit"
+                            className="inline-flex h-10 items-center justify-center rounded-2xl border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
+                          >
+                            Delete
+                          </button>
+                        </form>
                       </div>
-                    </a>
+                    </div>
                   ))}
                 </div>
               )}
@@ -443,6 +592,15 @@ export default async function ProjectDetailPage({
 
                 <div>
                   <dt className="text-sm font-medium text-zinc-500">
+                    Task progress
+                  </dt>
+                  <dd className="mt-1 text-sm text-zinc-900">
+                    {taskProgress}% complete
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-sm font-medium text-zinc-500">
                     Created at
                   </dt>
                   <dd className="mt-1 text-sm text-zinc-900">
@@ -469,18 +627,18 @@ export default async function ProjectDetailPage({
                 Delete project
               </h2>
               <p className="mt-3 text-sm leading-6 text-zinc-600">
-                This permanently removes the project and any tasks or asset links
-                attached to it.
+                Delete this project from your workspace using a small
+                confirmation step before anything is removed.
               </p>
 
-              <form action={deleteProject} className="mt-6">
-                <button
-                  type="submit"
+              <div className="mt-6">
+                <Link
+                  href={`/projects/${project.id}/delete`}
                   className="inline-flex h-11 items-center justify-center rounded-2xl border border-red-200 px-5 text-sm font-medium text-red-600 transition hover:bg-red-50"
                 >
                   Delete Project
-                </button>
-              </form>
+                </Link>
+              </div>
             </aside>
           </div>
         </div>

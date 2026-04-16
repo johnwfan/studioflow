@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 function formatDate(date: Date) {
@@ -28,9 +29,23 @@ function formatEnumLabel(value: string) {
     .join(" ");
 }
 
+function getTaskProgress(tasks: Array<{ completed: boolean }>) {
+  if (tasks.length === 0) {
+    return 0;
+  }
+
+  const completedTaskCount = tasks.filter((task) => task.completed).length;
+  return Math.round((completedTaskCount / tasks.length) * 100);
+}
+
 export default async function DashboardPage() {
+  const userId = await requireUserId();
+
   const [projects, tasks] = await Promise.all([
     prisma.project.findMany({
+      where: {
+        userId,
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -42,9 +57,19 @@ export default async function DashboardPage() {
         publishDate: true,
         createdAt: true,
         updatedAt: true,
+        tasks: {
+          select: {
+            completed: true,
+          },
+        },
       },
     }),
     prisma.task.findMany({
+      where: {
+        project: {
+          userId,
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -73,8 +98,6 @@ export default async function DashboardPage() {
   );
 
   const openTasks = tasks.filter((task) => !task.completed);
-  const completedTasks = tasks.filter((task) => task.completed);
-
   const upcomingProjects = [...scheduledProjects]
     .sort((a, b) => {
       if (!a.publishDate || !b.publishDate) {
@@ -90,6 +113,14 @@ export default async function DashboardPage() {
     .slice(0, 5);
 
   const taskPreview = openTasks.slice(0, 5);
+  const averageProjectProgress =
+    projects.length === 0
+      ? 0
+      : Math.round(
+          projects.reduce((total, project) => {
+            return total + getTaskProgress(project.tasks);
+          }, 0) / projects.length,
+        );
 
   const summaryCards = [
     {
@@ -199,40 +230,57 @@ export default async function DashboardPage() {
               </div>
             ) : (
               <div className="mt-6 space-y-4">
-                {upcomingProjects.map((project) => (
-                  <Link
-                    key={project.id}
-                    href={`/projects/${project.id}`}
-                    className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-5 transition hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
-                  >
-                    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-base font-semibold text-zinc-950">
-                          {project.title}
-                        </h3>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <span className="rounded-full bg-zinc-200 px-3 py-1 text-xs font-medium text-zinc-700">
-                            {formatEnumLabel(project.status)}
-                          </span>
-                          <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200">
-                            {formatEnumLabel(project.contentType)}
-                          </span>
+                {upcomingProjects.map((project) => {
+                  const taskProgress = getTaskProgress(project.tasks);
+
+                  return (
+                    <Link
+                      key={project.id}
+                      href={`/projects/${project.id}`}
+                      className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-5 transition hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+                    >
+                      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-base font-semibold text-zinc-950">
+                            {project.title}
+                          </h3>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <span className="rounded-full bg-zinc-200 px-3 py-1 text-xs font-medium text-zinc-700">
+                              {formatEnumLabel(project.status)}
+                            </span>
+                            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200">
+                              {formatEnumLabel(project.contentType)}
+                            </span>
+                          </div>
+
+                          <div className="mt-4">
+                            <div className="flex items-center justify-between gap-3 text-sm text-zinc-600">
+                              <span>Task progress</span>
+                              <span>{taskProgress}%</span>
+                            </div>
+                            <div className="mt-2 h-2 rounded-full bg-zinc-200">
+                              <div
+                                className="h-2 rounded-full bg-zinc-900 transition-all"
+                                style={{ width: `${taskProgress}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="shrink-0 text-sm text-zinc-600 md:text-right">
+                          <p className="font-medium text-zinc-900">
+                            {project.publishDate
+                              ? formatDateTime(project.publishDate)
+                              : "Not scheduled"}
+                          </p>
+                          <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
+                            Publish date
+                          </p>
                         </div>
                       </div>
-
-                      <div className="shrink-0 text-sm text-zinc-600 md:text-right">
-                        <p className="font-medium text-zinc-900">
-                          {project.publishDate
-                            ? formatDateTime(project.publishDate)
-                            : "Not scheduled"}
-                        </p>
-                        <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
-                          Publish date
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </section>
@@ -265,13 +313,13 @@ export default async function DashboardPage() {
 
               <article className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
                 <p className="text-sm font-medium text-zinc-500">
-                  Completed tasks
+                  Avg. progress
                 </p>
                 <p className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950">
-                  {completedTasks.length}
+                  {averageProjectProgress}%
                 </p>
                 <p className="mt-2 text-sm leading-6 text-zinc-600">
-                  Work already checked off across your projects.
+                  Average task completion across your projects.
                 </p>
               </article>
             </div>
@@ -329,34 +377,51 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <div className="mt-6 grid gap-3 lg:grid-cols-2">
-              {recentProjects.map((project) => (
-                <Link
-                  key={project.id}
-                  href={`/projects/${project.id}`}
-                  className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-5 transition hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <h3 className="truncate text-base font-semibold text-zinc-950">
-                        {project.title}
-                      </h3>
-                      <p className="mt-2 text-xs uppercase tracking-wide text-zinc-500">
-                        {formatEnumLabel(project.status)} •{" "}
-                        {formatEnumLabel(project.contentType)}
-                      </p>
+              {recentProjects.map((project) => {
+                const taskProgress = getTaskProgress(project.tasks);
+
+                return (
+                  <Link
+                    key={project.id}
+                    href={`/projects/${project.id}`}
+                    className="block rounded-2xl border border-zinc-200 bg-zinc-50 p-5 transition hover:border-zinc-300 hover:bg-white hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <h3 className="truncate text-base font-semibold text-zinc-950">
+                          {project.title}
+                        </h3>
+                        <p className="mt-2 text-xs uppercase tracking-wide text-zinc-500">
+                          {formatEnumLabel(project.status)} •{" "}
+                          {formatEnumLabel(project.contentType)}
+                        </p>
+                      </div>
+
+                      <div className="shrink-0 text-right">
+                        <p className="text-sm font-medium text-zinc-900">
+                          {formatDate(project.updatedAt)}
+                        </p>
+                        <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
+                          Updated
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="shrink-0 text-right">
-                      <p className="text-sm font-medium text-zinc-900">
-                        {formatDate(project.updatedAt)}
-                      </p>
-                      <p className="mt-1 text-xs uppercase tracking-wide text-zinc-500">
-                        Updated
-                      </p>
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between gap-3 text-sm text-zinc-600">
+                        <span>Task progress</span>
+                        <span>{taskProgress}%</span>
+                      </div>
+                      <div className="mt-2 h-2 rounded-full bg-zinc-200">
+                        <div
+                          className="h-2 rounded-full bg-zinc-900 transition-all"
+                          style={{ width: `${taskProgress}%` }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </section>

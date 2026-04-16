@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const statusOptions = [
@@ -53,12 +54,14 @@ export default async function EditProjectPage({
   searchParams,
 }: EditProjectPageProps) {
   const { id } = await params;
+  const userId = await requireUserId();
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const titleError = resolvedSearchParams?.error === "title";
 
-  const project = await prisma.project.findUnique({
+  const project = await prisma.project.findFirst({
     where: {
       id,
+      userId,
     },
   });
 
@@ -68,6 +71,8 @@ export default async function EditProjectPage({
 
   async function updateProject(formData: FormData) {
     "use server";
+
+    const currentUserId = await requireUserId();
 
     const title = formData.get("title");
     const description = formData.get("description");
@@ -82,9 +87,25 @@ export default async function EditProjectPage({
       redirect(`/projects/${id}/edit?error=title`);
     }
 
-    const updatedProject = await prisma.project.update({
+    const ownedProject = await prisma.project.findFirst({
       where: {
         id,
+        userId: currentUserId,
+      },
+      select: {
+        id: true,
+        status: true,
+        contentType: true,
+      },
+    });
+
+    if (!ownedProject) {
+      notFound();
+    }
+
+    const updatedProject = await prisma.project.update({
+      where: {
+        id: ownedProject.id,
       },
       data: {
         title: trimmedTitle,
@@ -95,12 +116,12 @@ export default async function EditProjectPage({
         notes: typeof notes === "string" && notes.trim() ? notes.trim() : null,
         status: statusOptions.includes(status as (typeof statusOptions)[number])
           ? (status as (typeof statusOptions)[number])
-          : project.status,
+          : ownedProject.status,
         contentType: contentTypeOptions.includes(
           contentType as (typeof contentTypeOptions)[number],
         )
           ? (contentType as (typeof contentTypeOptions)[number])
-          : project.contentType,
+          : ownedProject.contentType,
         publishDate:
           typeof publishDate === "string" && publishDate
             ? new Date(publishDate)
@@ -112,6 +133,7 @@ export default async function EditProjectPage({
     revalidatePath(`/projects/${id}`);
     revalidatePath("/dashboard");
     revalidatePath("/calendar");
+    revalidatePath("/workflow");
     redirect(`/projects/${updatedProject.id}`);
   }
 

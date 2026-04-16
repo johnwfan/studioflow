@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const workflowStages = [
@@ -55,7 +56,12 @@ function formatDate(date: Date | null) {
 }
 
 export default async function WorkflowPage() {
+  const userId = await requireUserId();
+
   const projects = await prisma.project.findMany({
+    where: {
+      userId,
+    },
     orderBy: [
       {
         updatedAt: "desc",

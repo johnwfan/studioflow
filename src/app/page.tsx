@@ -1,6 +1,9 @@
+import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { userId } = await auth();
+
   return (
     <main className="landing-page">
       <section className="landing-page__section">
@@ -20,13 +23,27 @@ export default function HomePage() {
           </p>
 
           <div className="landing-page__actions">
-            <Link href="/dashboard" className="landing-page__primary-action">
-              Enter app
-            </Link>
+            {userId ? (
+              <>
+                <Link href="/dashboard" className="landing-page__primary-action">
+                  Enter app
+                </Link>
 
-            <Link href="/projects" className="landing-page__secondary-action">
-              View workspace
-            </Link>
+                <Link href="/projects" className="landing-page__secondary-action">
+                  View workspace
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/sign-up" className="landing-page__primary-action">
+                  Create account
+                </Link>
+
+                <Link href="/sign-in" className="landing-page__secondary-action">
+                  Sign in
+                </Link>
+              </>
+            )}
           </div>
         </div>
 

@@ -2,10 +2,7 @@ import "dotenv/config";
 
 import { prisma } from "../src/lib/prisma";
 
-const seedUser = {
-  email: "studioflow-demo@example.com",
-  name: "Studioflow Demo",
-};
+const seedUserId = process.env.SEED_CLERK_USER_ID ?? "user_demo_clerk_seed";
 
 const projectSeedData = [
   {
@@ -81,17 +78,9 @@ const projectSeedData = [
 ];
 
 async function main() {
-  const user = await prisma.user.upsert({
-    where: { email: seedUser.email },
-    update: {
-      name: seedUser.name,
-    },
-    create: seedUser,
-  });
-
   const existingProjects = await prisma.project.findMany({
     where: {
-      userId: user.id,
+      userId: seedUserId,
     },
     select: {
       id: true,
@@ -119,7 +108,7 @@ async function main() {
 
     await prisma.project.deleteMany({
       where: {
-        userId: user.id,
+        userId: seedUserId,
       },
     });
   }
@@ -128,14 +117,14 @@ async function main() {
     await prisma.project.create({
       data: {
         ...project,
-        userId: user.id,
+        userId: seedUserId,
       },
     });
   }
 
   const seededProjects = await prisma.project.findMany({
     where: {
-      userId: user.id,
+      userId: seedUserId,
     },
     orderBy: [
       {
@@ -154,8 +143,8 @@ async function main() {
     },
   });
 
-  console.log("Seeded user:");
-  console.log(user);
+  console.log("Seeded Clerk user ID:");
+  console.log(seedUserId);
   console.log("");
   console.log("Seeded projects:");
   console.table(
