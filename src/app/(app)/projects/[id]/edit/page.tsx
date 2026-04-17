@@ -148,9 +148,6 @@ export default async function EditProjectPage({
             <div className="page-header__body">
               <p className="page-header__eyebrow">Edit Project</p>
               <h1 className="page-header__title">{project.title}</h1>
-              <p className="page-header__description">
-                Update the plan, content type, schedule, and notes without losing momentum.
-              </p>
             </div>
 
             <div className="page-header__actions">

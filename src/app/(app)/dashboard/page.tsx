@@ -150,9 +150,6 @@ export default async function DashboardPage() {
             <div className="page-header__body">
               <p className="page-header__eyebrow">Workspace Snapshot</p>
               <h1 className="page-header__title">Dashboard</h1>
-              <p className="page-header__description">
-                Track what is moving, what is blocked, and what is ready to ship next.
-              </p>
             </div>
 
             <div className="page-header__actions">

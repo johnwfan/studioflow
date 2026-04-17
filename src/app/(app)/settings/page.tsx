@@ -31,9 +31,6 @@ export default async function SettingsPage() {
           <div className="page-header__body">
             <p className="page-header__eyebrow">Workspace Settings</p>
             <h1 className="page-header__title">Settings</h1>
-            <p className="page-header__description">
-              Personalize your workspace look and keep account access close at hand.
-            </p>
           </div>
         </header>
 

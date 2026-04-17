@@ -87,7 +87,6 @@ export default async function HomePage() {
                     The transition into the app should feel immediate and focused.
                   </p>
                 </div>
-                <span className="landing-page__preview-pill">Live workflow</span>
               </div>
 
               <div className="landing-page__preview-grid">

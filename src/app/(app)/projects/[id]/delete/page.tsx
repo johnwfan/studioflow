@@ -12,19 +12,13 @@ type DeleteProjectPageProps = {
   params: Promise<{
     id: string;
   }>;
-  searchParams?: Promise<{
-    error?: string;
-  }>;
 };
 
 export default async function DeleteProjectPage({
   params,
-  searchParams,
 }: DeleteProjectPageProps) {
   const { id } = await params;
   const userId = await requireUserId();
-  const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const confirmationError = resolvedSearchParams?.error === "confirm";
 
   const project = await prisma.project.findFirst({
     where: {
@@ -47,14 +41,10 @@ export default async function DeleteProjectPage({
     notFound();
   }
 
-  async function confirmDeleteProject(formData: FormData) {
+  async function confirmDeleteProject() {
     "use server";
 
     const currentUserId = await requireUserId();
-
-    const confirmationText = formData.get("confirmationText");
-    const typedValue =
-      typeof confirmationText === "string" ? confirmationText.trim() : "";
 
     const ownedProject = await prisma.project.findFirst({
       where: {
@@ -69,10 +59,6 @@ export default async function DeleteProjectPage({
 
     if (!ownedProject) {
       notFound();
-    }
-
-    if (typedValue !== ownedProject.title) {
-      redirect(`/projects/${ownedProject.id}/delete?error=confirm`);
     }
 
     await prisma.$transaction([
@@ -107,9 +93,6 @@ export default async function DeleteProjectPage({
           <div className="page-header__body">
             <p className="page-header__eyebrow">Delete Project</p>
             <h1 className="page-header__title">Confirm deletion</h1>
-            <p className="page-header__description">
-              This flow adds a short pause so destructive actions stay intentional.
-            </p>
           </div>
         </header>
 
@@ -134,31 +117,15 @@ export default async function DeleteProjectPage({
           </div>
 
           <form action={confirmDeleteProject} className="mt-8 space-y-6">
-            <div className="space-y-2">
-              <label
-                htmlFor="confirmationText"
-                className="text-sm font-medium text-foreground"
-              >
-                Type the project title to confirm
-              </label>
-              <input
-                id="confirmationText"
-                name="confirmationText"
-                type="text"
-                required
-                placeholder={project.title}
-                className="ui-input"
-              />
-              <p className="ui-help-text">
-                This small confirmation step helps prevent accidental deletion.
-              </p>
-            </div>
+            <p className="text-sm leading-6 text-muted-foreground">
+              Choosing delete will open one final browser confirmation before anything is removed.
+            </p>
 
             <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
               <Button asChild variant="outline" size="lg">
                 <Link href={`/projects/${project.id}`}>Cancel</Link>
               </Button>
-              <DeleteProjectConfirmation error={confirmationError} />
+              <DeleteProjectConfirmation />
             </div>
           </form>
         </section>

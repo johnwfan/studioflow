@@ -490,17 +490,12 @@
   }
 
   .page-header__eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-[0.32em];
-    color: oklch(from var(--muted-foreground) l c h / 0.7);
+    @apply inline-flex items-center rounded-full border border-border/75 bg-secondary/55 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.28em] shadow-sm;
+    color: oklch(from var(--muted-foreground) l c h / 0.82);
   }
 
   .page-header__title {
     @apply mt-3 min-h-[3rem] text-3xl leading-tight font-semibold tracking-[-0.04em] text-foreground sm:min-h-[3.5rem] sm:text-4xl;
-  }
-
-  .page-header__description {
-    @apply mt-4 max-w-2xl text-sm leading-7 sm:text-base;
-    color: oklch(from var(--muted-foreground) l c h / 0.92);
   }
 
   .page-header__meta {
@@ -592,7 +587,7 @@
   }
 
   .page-section {
-    @apply rounded-[1.5rem] border border-border/90 bg-card/88 p-6 text-card-foreground transition-[transform,border-color,background-color,box-shadow] duration-200 sm:p-8 motion-safe:hover:-translate-y-1;
+    @apply rounded-[1.5rem] border border-border/90 bg-card/88 p-6 text-card-foreground transition-[border-color,background-color,box-shadow] duration-200 sm:p-8;
     box-shadow:
       0 2px 8px -2px rgba(15, 23, 42, 0.08),
       0 18px 42px -36px rgba(15, 23, 42, 0.12);
@@ -622,6 +617,227 @@
     color: oklch(from var(--muted-foreground) l c h / 0.92);
   }
 
+  .calendar-shell {
+    @apply overflow-visible;
+  }
+
+  .calendar-toolbar {
+    @apply flex flex-col gap-5 border-b border-border/80 pb-6 lg:flex-row lg:items-end lg:justify-between;
+  }
+
+  .calendar-toolbar__title {
+    @apply mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl;
+  }
+
+  .calendar-toolbar__controls {
+    @apply flex flex-col gap-3 lg:items-end;
+  }
+
+  .calendar-view-switcher {
+    @apply inline-flex w-full flex-wrap gap-2 rounded-[1rem] border border-border/80 bg-secondary/45 p-1.5 lg:w-auto;
+  }
+
+  .calendar-view-switcher__button {
+    @apply inline-flex items-center justify-center gap-2 rounded-[0.85rem] px-3 py-2 text-sm font-medium text-muted-foreground transition-[background-color,color,border-color,box-shadow] duration-150 hover:bg-card hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring;
+  }
+
+  .calendar-view-switcher__button--active {
+    @apply bg-card text-foreground shadow-sm;
+  }
+
+  .calendar-nav {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .calendar-surface {
+    @apply mt-6;
+  }
+
+  .calendar-weekdays {
+    @apply mb-3 hidden grid-cols-7 gap-3 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground md:grid;
+  }
+
+  .calendar-weekdays__label {
+    @apply px-3;
+  }
+
+  .calendar-month__grid {
+    @apply grid gap-3 md:grid-cols-7;
+  }
+
+  .calendar-day-card {
+    @apply flex min-h-[10.5rem] flex-col rounded-[1.35rem] border border-border/80 bg-secondary/28 p-3 transition-[border-color,background-color,box-shadow] duration-200;
+  }
+
+  .calendar-day-card--outside {
+    @apply bg-muted/35 text-muted-foreground;
+  }
+
+  .calendar-day-card--today {
+    @apply border-ring/70 bg-card;
+    box-shadow: 0 0 0 1px oklch(from var(--ring) l c h / 0.18);
+  }
+
+  .calendar-day-card__header {
+    @apply flex items-center justify-between gap-3;
+  }
+
+  .calendar-day-card__number {
+    @apply text-sm font-semibold text-foreground;
+  }
+
+  .calendar-day-card__count {
+    @apply text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground;
+  }
+
+  .calendar-day-card__markers {
+    @apply mt-3 space-y-2;
+  }
+
+  .calendar-marker-group {
+    @apply relative;
+  }
+
+  .calendar-marker {
+    @apply inline-flex w-full items-center justify-between gap-2 rounded-xl border border-border/80 bg-card/90 px-3 py-2 text-left text-sm font-medium text-foreground shadow-sm transition-[border-color,background-color,box-shadow] duration-150 hover:border-ring/80 hover:bg-card focus-visible:ring-4 focus-visible:ring-ring;
+  }
+
+  .calendar-marker--dot {
+    @apply size-2 rounded-full border-0 bg-primary p-0 shadow-none;
+  }
+
+  .calendar-marker-group--dot {
+    @apply absolute bottom-2 left-1/2 -translate-x-1/2;
+  }
+
+  .calendar-marker--row {
+    @apply min-h-[4.5rem] items-start rounded-[1.1rem] px-3 py-3;
+  }
+
+  .calendar-row-time {
+    @apply shrink-0 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground;
+  }
+
+  .calendar-hover-card {
+    @apply pointer-events-none absolute left-0 top-full z-30 hidden w-[22rem] pt-3 opacity-0 transition-[opacity,transform] duration-150;
+    transform: translateY(6px);
+  }
+
+  .calendar-marker-group:hover .calendar-hover-card,
+  .calendar-marker-group:focus-within .calendar-hover-card {
+    @apply pointer-events-auto block opacity-100;
+    transform: translateY(0);
+  }
+
+  .calendar-hover-card__inner {
+    @apply space-y-3 rounded-[1.4rem] border border-border/85 bg-popover/96 p-4 text-popover-foreground shadow-[0_22px_50px_-30px_rgba(15,23,42,0.35)] backdrop-blur-xl;
+  }
+
+  .calendar-hover-card__project {
+    @apply rounded-[1rem] border border-border/70 bg-card/70 p-3;
+  }
+
+  .calendar-hover-card__header {
+    @apply flex items-start justify-between gap-3;
+  }
+
+  .calendar-hover-card__eyebrow {
+    @apply text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground;
+  }
+
+  .calendar-hover-card__title {
+    @apply mt-1 text-sm font-semibold text-foreground;
+  }
+
+  .calendar-hover-card__meta {
+    @apply mt-3 flex flex-wrap gap-2;
+  }
+
+  .calendar-hover-card__description {
+    @apply mt-3 text-sm leading-6 text-muted-foreground;
+  }
+
+  .calendar-hover-card__actions {
+    @apply mt-3;
+  }
+
+  .calendar-hover-card__link {
+    @apply text-sm font-medium text-primary underline-offset-4 hover:underline;
+  }
+
+  .calendar-week {
+    @apply grid gap-4 xl:grid-cols-7;
+  }
+
+  .calendar-week-day {
+    @apply rounded-[1.4rem] border border-border/80 bg-secondary/30 p-4;
+  }
+
+  .calendar-week-day--today {
+    @apply border-ring/70 bg-card;
+    box-shadow: 0 0 0 1px oklch(from var(--ring) l c h / 0.18);
+  }
+
+  .calendar-week-day__header {
+    @apply border-b border-border/70 pb-3;
+  }
+
+  .calendar-week-day__label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground;
+  }
+
+  .calendar-week-day__number {
+    @apply mt-2 text-2xl font-semibold tracking-tight text-foreground;
+  }
+
+  .calendar-week-day__list {
+    @apply mt-4 space-y-3;
+  }
+
+  .calendar-week-day__empty {
+    @apply mt-4 text-sm leading-6 text-muted-foreground;
+  }
+
+  .calendar-year {
+    @apply grid gap-4 md:grid-cols-2 2xl:grid-cols-3;
+  }
+
+  .calendar-year-month {
+    @apply rounded-[1.35rem] border border-border/80 bg-secondary/26 p-4;
+  }
+
+  .calendar-year-month__header {
+    @apply mb-3 flex items-center justify-between;
+  }
+
+  .calendar-year-month__title {
+    @apply text-base font-semibold text-foreground;
+  }
+
+  .calendar-year-month__weekdays {
+    @apply mb-2 grid grid-cols-7 text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground;
+  }
+
+  .calendar-year-month__grid {
+    @apply grid grid-cols-7 gap-1.5;
+  }
+
+  .calendar-year-day {
+    @apply relative flex aspect-square items-start justify-end rounded-[0.9rem] border border-transparent px-1.5 py-1 text-xs text-foreground;
+  }
+
+  .calendar-year-day--outside {
+    @apply text-muted-foreground/50;
+  }
+
+  .calendar-year-day--today {
+    @apply border-ring/60 bg-card;
+  }
+
+  .calendar-year-day__number {
+    @apply leading-none;
+  }
+
   .surface-subtle {
     @apply rounded-[1.5rem] border border-border/80 bg-secondary/55 p-5;
   }
@@ -631,13 +847,7 @@
   }
 
   .surface-empty::before {
-    content: "";
-    @apply pointer-events-none absolute inset-x-[18%] top-0 h-24 rounded-full blur-3xl;
-    background: linear-gradient(
-      135deg,
-      oklch(from var(--ring-soft) l c h / 0.42),
-      oklch(from var(--ring-soft) l c h / 0)
-    );
+    content: none;
   }
 
   .surface-empty__icon-wrap {
@@ -671,7 +881,7 @@
   }
 
   .metric-card {
-    @apply rounded-[1.5rem] border border-border/90 bg-card/92 p-6 transition-[transform,border-color,background-color,box-shadow] duration-200 motion-safe:hover:-translate-y-1;
+    @apply rounded-[1.5rem] border border-border/90 bg-card/92 p-6 transition-[border-color,background-color,box-shadow] duration-200;
     box-shadow:
       0 2px 8px -2px rgba(15, 23, 42, 0.08),
       0 14px 36px -34px rgba(15, 23, 42, 0.16);
@@ -731,7 +941,7 @@
   }
 
   .list-card {
-    @apply rounded-[1.35rem] border border-border/80 bg-card/72 p-5 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:border-ring/85 hover:bg-card focus-visible:ring-4 focus-visible:ring-ring/25 motion-safe:hover:-translate-y-1;
+    @apply rounded-[1.35rem] border border-border/80 bg-card/72 p-5 transition-[border-color,background-color,box-shadow] duration-200 hover:border-ring/85 hover:bg-card focus-visible:ring-4 focus-visible:ring-ring/25;
     box-shadow:
       0 1px 2px rgba(15, 23, 42, 0.04),
       0 10px 24px -24px rgba(15, 23, 42, 0.12);
@@ -779,9 +989,6 @@
 
   .landing-page {
     @apply min-h-screen overflow-hidden bg-background text-foreground;
-    background-image:
-      radial-gradient(circle at top left, oklch(from var(--ring-soft) l c h / 0.35), transparent 26rem),
-      linear-gradient(to bottom, oklch(from var(--background) l c h / 1), oklch(from var(--surface-soft) l c h / 1));
   }
 
   .landing-page__section {
@@ -1029,7 +1236,7 @@
   }
 
   .project-card {
-    @apply rounded-3xl border border-border bg-card p-5 shadow-sm transition duration-200 motion-safe:hover:-translate-y-1 hover:shadow-md;
+    @apply rounded-3xl border border-border bg-card p-5 shadow-sm transition duration-200 hover:shadow-md;
   }
 
   .project-card__header {

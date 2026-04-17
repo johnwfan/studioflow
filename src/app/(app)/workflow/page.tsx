@@ -98,9 +98,6 @@ export default async function WorkflowPage() {
             <div className="page-header__body">
               <p className="page-header__eyebrow">Production Pipeline</p>
               <h1 className="page-header__title">Workflow Board</h1>
-              <p className="page-header__description">
-                See how every project is moving from idea to shipped work.
-              </p>
             </div>
 
             <div className="page-header__actions">

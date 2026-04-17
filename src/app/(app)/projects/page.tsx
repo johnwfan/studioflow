@@ -95,9 +95,6 @@ export default async function ProjectsPage({
             <div className="page-header__body">
               <p className="page-header__eyebrow">Workspace</p>
               <h1 className="page-header__title">Projects</h1>
-              <p className="page-header__description">
-                Keep every concept, deliverable, and publish plan moving through the same workspace.
-              </p>
             </div>
 
             <div className="page-header__actions">
@@ -145,10 +142,6 @@ export default async function ProjectsPage({
           <div className="page-section__header">
             <div>
               <p className="page-section__eyebrow">Filters</p>
-              <h2 className="page-section__title">Refine your workspace</h2>
-              <p className="page-section__description">
-                Narrow the list by production stage or content type.
-              </p>
             </div>
           </div>
 

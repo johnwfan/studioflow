@@ -103,9 +103,6 @@ export default async function NewProjectPage({
             <div className="page-header__body">
               <p className="page-header__eyebrow">Create Project</p>
               <h1 className="page-header__title">New project</h1>
-              <p className="page-header__description">
-                Start with the essentials, then grow the plan as the idea takes shape.
-              </p>
             </div>
 
             <div className="page-header__actions">

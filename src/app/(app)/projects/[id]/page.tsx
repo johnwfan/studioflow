@@ -293,7 +293,7 @@ export default async function ProjectDetailPage({
   return (
     <div className="page-shell">
       <div className="page-shell__inner">
-        <header className="page-header page-header--hero">
+        <header className="page-header">
           <div className="page-header__content">
             <div className="page-header__body">
               <p className="page-header__eyebrow">Project Workspace</p>
