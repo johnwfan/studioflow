@@ -1,5 +1,9 @@
 import Link from "next/link";
+import { Camera, FolderPlus } from "lucide-react";
 
+import Breadcrumbs from "@/components/breadcrumbs";
+import EmptyState from "@/components/empty-state";
+import StatusBadge from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -91,6 +95,9 @@ export default async function ProjectsPage({
             <div className="page-header__body">
               <p className="page-header__eyebrow">Workspace</p>
               <h1 className="page-header__title">Projects</h1>
+              <p className="page-header__description">
+                Keep every concept, deliverable, and publish plan moving through the same workspace.
+              </p>
             </div>
 
             <div className="page-header__actions">
@@ -126,6 +133,13 @@ export default async function ProjectsPage({
             </div>
           ) : null}
         </header>
+
+        <Breadcrumbs
+          items={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Projects" },
+          ]}
+        />
 
         <section className="page-section">
           <div className="page-section__header">
@@ -177,18 +191,15 @@ export default async function ProjectsPage({
         </section>
 
         {filteredProjects.length === 0 ? (
-          <section className="surface-empty">
-            <h2 className="surface-empty__title">No matching projects yet</h2>
-            <p className="surface-empty__description">
-              Try a different filter combination, or create a new project to
-              start filling the workspace.
-            </p>
-            <div className="mt-5">
-              <Button asChild size="lg">
-                <Link href="/projects/new">Create a project</Link>
-              </Button>
-            </div>
-          </section>
+          <EmptyState
+            icon={Camera}
+            title="Start your first project"
+            description="Try a different filter combination, or create a new project to start filling the workspace."
+            actionHref="/projects/new"
+            actionLabel="Create a project"
+            actionIcon={FolderPlus}
+            hint="Tip: start with a title and status first, then add tasks and notes once the project feels real."
+          />
         ) : (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredProjects.map((project) => {
@@ -214,7 +225,7 @@ export default async function ProjectsPage({
                         </p>
                       </div>
 
-                      <span className="chip">{formatEnumLabel(project.status)}</span>
+                      <StatusBadge status={project.status} />
                     </div>
 
                     <p className="mt-4 line-clamp-3 text-sm leading-6 text-muted-foreground">

@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import Breadcrumbs from "@/components/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import SubmitButton from "@/components/ui/submit-button";
 import { requireUserId } from "@/lib/auth";
@@ -147,6 +148,9 @@ export default async function EditProjectPage({
             <div className="page-header__body">
               <p className="page-header__eyebrow">Edit Project</p>
               <h1 className="page-header__title">{project.title}</h1>
+              <p className="page-header__description">
+                Update the plan, content type, schedule, and notes without losing momentum.
+              </p>
             </div>
 
             <div className="page-header__actions">
@@ -156,6 +160,15 @@ export default async function EditProjectPage({
             </div>
           </div>
         </header>
+
+        <Breadcrumbs
+          items={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Projects", href: "/projects" },
+            { label: project.title, href: `/projects/${project.id}` },
+            { label: "Edit" },
+          ]}
+        />
 
         <section className="page-section">
           <div className="page-section__header">

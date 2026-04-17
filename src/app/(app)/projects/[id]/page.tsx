@@ -1,7 +1,11 @@
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Link2, ListTodo, PenSquare } from "lucide-react";
 
+import Breadcrumbs from "@/components/breadcrumbs";
+import EmptyState from "@/components/empty-state";
+import StatusBadge from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import SubmitButton from "@/components/ui/submit-button";
 import { requireUserId } from "@/lib/auth";
@@ -296,9 +300,7 @@ export default async function ProjectDetailPage({
               <h1 className="page-header__title">{project.title}</h1>
 
               <div className="page-header__meta">
-                <span className="chip chip--strong">
-                  {formatEnumLabel(project.status)}
-                </span>
+                <StatusBadge status={project.status} />
                 <span className="chip">{formatEnumLabel(project.contentType)}</span>
                 <span className="chip">
                   {openTaskCount} open {openTaskCount === 1 ? "task" : "tasks"}
@@ -339,6 +341,14 @@ export default async function ProjectDetailPage({
             </div>
           ) : null}
         </header>
+
+        <Breadcrumbs
+          items={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Projects", href: "/projects" },
+            { label: project.title },
+          ]}
+        />
 
         <div className="grid gap-6 xl:grid-cols-[1.45fr_0.95fr]">
           <div className="space-y-6">
@@ -402,11 +412,15 @@ export default async function ProjectDetailPage({
               </form>
 
               {project.tasks.length === 0 ? (
-                <div className="surface-empty mt-6">
-                  <h3 className="surface-empty__title">No tasks yet</h3>
-                  <p className="surface-empty__description">
-                    Add a few small next steps so this project feels actionable.
-                  </p>
+                <div className="mt-6">
+                  <EmptyState
+                    icon={ListTodo}
+                    title="No tasks yet"
+                    description="Add a few small next steps so this project feels actionable."
+                    actionHref={`/projects/${project.id}/edit`}
+                    actionLabel="Refine project"
+                    actionIcon={PenSquare}
+                  />
                 </div>
               ) : (
                 <div className="mt-6 space-y-3">
@@ -496,11 +510,12 @@ export default async function ProjectDetailPage({
               </form>
 
               {project.assetLinks.length === 0 ? (
-                <div className="surface-empty mt-6">
-                  <h3 className="surface-empty__title">No asset links yet</h3>
-                  <p className="surface-empty__description">
-                    Save useful docs, references, scripts, or inspiration links here.
-                  </p>
+                <div className="mt-6">
+                  <EmptyState
+                    icon={Link2}
+                    title="No asset links yet"
+                    description="Save useful docs, references, scripts, or inspiration links here."
+                  />
                 </div>
               ) : (
                 <div className="mt-6 space-y-3">

@@ -2,8 +2,9 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import Breadcrumbs from "@/components/breadcrumbs";
+import DeleteProjectConfirmation from "@/components/delete-project-confirmation";
 import { Button } from "@/components/ui/button";
-import SubmitButton from "@/components/ui/submit-button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -57,7 +58,7 @@ export default async function DeleteProjectPage({
 
     const ownedProject = await prisma.project.findFirst({
       where: {
-        id: project.id,
+        id,
         userId: currentUserId,
       },
       select: {
@@ -106,8 +107,20 @@ export default async function DeleteProjectPage({
           <div className="page-header__body">
             <p className="page-header__eyebrow">Delete Project</p>
             <h1 className="page-header__title">Confirm deletion</h1>
+            <p className="page-header__description">
+              This flow adds a short pause so destructive actions stay intentional.
+            </p>
           </div>
         </header>
+
+        <Breadcrumbs
+          items={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Projects", href: "/projects" },
+            { label: project.title, href: `/projects/${project.id}` },
+            { label: "Delete" },
+          ]}
+        />
 
         <section className="page-section">
           <div className="danger-panel">
@@ -139,24 +152,13 @@ export default async function DeleteProjectPage({
               <p className="ui-help-text">
                 This small confirmation step helps prevent accidental deletion.
               </p>
-              {confirmationError ? (
-                <p className="ui-error-text">
-                  Enter the exact project title before deleting it.
-                </p>
-              ) : null}
             </div>
 
             <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
               <Button asChild variant="outline" size="lg">
                 <Link href={`/projects/${project.id}`}>Cancel</Link>
               </Button>
-              <SubmitButton
-                variant="destructive"
-                size="lg"
-                pendingLabel="Deleting project..."
-              >
-                Permanently delete
-              </SubmitButton>
+              <DeleteProjectConfirmation error={confirmationError} />
             </div>
           </form>
         </section>

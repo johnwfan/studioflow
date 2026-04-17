@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
+import Breadcrumbs from "@/components/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import SubmitButton from "@/components/ui/submit-button";
 import { requireUserId } from "@/lib/auth";
@@ -102,6 +103,9 @@ export default async function NewProjectPage({
             <div className="page-header__body">
               <p className="page-header__eyebrow">Create Project</p>
               <h1 className="page-header__title">New project</h1>
+              <p className="page-header__description">
+                Start with the essentials, then grow the plan as the idea takes shape.
+              </p>
             </div>
 
             <div className="page-header__actions">
@@ -111,6 +115,14 @@ export default async function NewProjectPage({
             </div>
           </div>
         </header>
+
+        <Breadcrumbs
+          items={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Projects", href: "/projects" },
+            { label: "New project" },
+          ]}
+        />
 
         <section className="page-section">
           <div className="page-section__header">

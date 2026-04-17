@@ -1,5 +1,9 @@
 import Link from "next/link";
+import { FolderKanban, KanbanSquare } from "lucide-react";
 
+import Breadcrumbs from "@/components/breadcrumbs";
+import EmptyState from "@/components/empty-state";
+import StatusBadge from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -94,6 +98,9 @@ export default async function WorkflowPage() {
             <div className="page-header__body">
               <p className="page-header__eyebrow">Production Pipeline</p>
               <h1 className="page-header__title">Workflow Board</h1>
+              <p className="page-header__description">
+                See how every project is moving from idea to shipped work.
+              </p>
             </div>
 
             <div className="page-header__actions">
@@ -106,6 +113,13 @@ export default async function WorkflowPage() {
             </div>
           </div>
         </header>
+
+        <Breadcrumbs
+          items={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Workflow" },
+          ]}
+        />
 
         <section>
           <div className="overflow-x-auto pb-3">
@@ -133,14 +147,16 @@ export default async function WorkflowPage() {
                 </div>
 
                 {column.projects.length === 0 ? (
-                  <div className="surface-empty mt-5 flex flex-1 items-center justify-center">
-                    <div>
-                      <h3 className="surface-empty__title">
-                        Nothing here yet
-                      </h3>
-                      <p className="surface-empty__description">
-                        No projects in {column.label.toLowerCase()} right now.
-                      </p>
+                  <div className="mt-5 flex flex-1 items-center justify-center">
+                    <div className="w-full">
+                      <EmptyState
+                        icon={KanbanSquare}
+                        title="Nothing here yet"
+                        description={`No projects in ${column.label.toLowerCase()} right now.`}
+                        actionHref="/projects/new"
+                        actionLabel="New project"
+                        actionIcon={FolderKanban}
+                      />
                     </div>
                   </div>
                 ) : (
@@ -168,6 +184,7 @@ export default async function WorkflowPage() {
                         )}
 
                         <div className="mt-5 flex flex-wrap items-center gap-2">
+                          <StatusBadge status={project.status} />
                           <span className="chip">{formatContentType(project.contentType)}</span>
                           {project.publishDate ? (
                             <span className="chip">{formatDate(project.publishDate)}</span>

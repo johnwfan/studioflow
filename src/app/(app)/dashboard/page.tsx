@@ -1,5 +1,9 @@
 import Link from "next/link";
+import { CalendarClock, CheckCheck, FolderKanban, Sparkles } from "lucide-react";
 
+import Breadcrumbs from "@/components/breadcrumbs";
+import EmptyState from "@/components/empty-state";
+import StatusBadge from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -139,13 +143,16 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="page-shell">
+    <div className="page-shell dashboard-page">
       <div className="page-shell__inner">
-        <header className="page-header page-header--hero">
+        <header className="page-header">
           <div className="page-header__content">
             <div className="page-header__body">
               <p className="page-header__eyebrow">Workspace Snapshot</p>
               <h1 className="page-header__title">Dashboard</h1>
+              <p className="page-header__description">
+                Track what is moving, what is blocked, and what is ready to ship next.
+              </p>
             </div>
 
             <div className="page-header__actions">
@@ -159,12 +166,15 @@ export default async function DashboardPage() {
           </div>
         </header>
 
+        <Breadcrumbs items={[{ label: "Dashboard" }]} />
+
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {summaryCards.map((card, index) => (
             <article
               key={card.label}
               className={[
                 "metric-card",
+                "dashboard-static-card",
                 index === 0 ? "sm:col-span-2 xl:col-span-2" : "",
               ].join(" ")}
             >
@@ -176,7 +186,7 @@ export default async function DashboardPage() {
         </section>
 
         <div className="grid gap-8 xl:grid-cols-[1.2fr_0.8fr]">
-          <section className="page-section">
+          <section className="page-section dashboard-static-card">
             <div className="page-section__header">
               <div>
                 <p className="page-section__eyebrow">Next Up</p>
@@ -189,12 +199,15 @@ export default async function DashboardPage() {
             </div>
 
             {upcomingProjects.length === 0 ? (
-              <div className="surface-empty mt-6">
-                <h3 className="surface-empty__title">Nothing is scheduled yet</h3>
-                <p className="surface-empty__description">
-                  Projects with a publish date will show up here in
-                  chronological order.
-                </p>
+              <div className="mt-6">
+                <EmptyState
+                  icon={CalendarClock}
+                  title="Let's create something"
+                  description="Projects with a publish date will show up here in chronological order."
+                  actionHref="/projects/new"
+                  actionLabel="Plan a project"
+                  actionIcon={FolderKanban}
+                />
               </div>
             ) : (
               <div className="mt-6 space-y-4">
@@ -213,9 +226,7 @@ export default async function DashboardPage() {
                             {project.title}
                           </h3>
                           <div className="mt-3 flex flex-wrap gap-2">
-                            <span className="chip">
-                              {formatEnumLabel(project.status)}
-                            </span>
+                            <StatusBadge status={project.status} />
                             <span className="chip">
                               {formatEnumLabel(project.contentType)}
                             </span>
@@ -253,7 +264,7 @@ export default async function DashboardPage() {
             )}
           </section>
 
-          <section className="page-section">
+          <section className="page-section dashboard-static-card">
             <div className="page-section__header">
               <div>
                 <p className="page-section__eyebrow">Tasks</p>
@@ -285,12 +296,12 @@ export default async function DashboardPage() {
             </div>
 
             {taskPreview.length === 0 ? (
-              <div className="surface-empty mt-6">
-                <h3 className="surface-empty__title">No open tasks yet</h3>
-                <p className="surface-empty__description">
-                  Once you add tasks to projects, the most recent open items
-                  will show up here.
-                </p>
+              <div className="mt-6">
+                <EmptyState
+                  icon={CheckCheck}
+                  title="All caught up!"
+                  description="Once you add tasks to projects, the most recent open items will show up here."
+                />
               </div>
             ) : (
               <div className="mt-6 space-y-3">
@@ -311,7 +322,7 @@ export default async function DashboardPage() {
           </section>
         </div>
 
-        <section className="page-section">
+        <section className="page-section dashboard-static-card">
           <div className="page-section__header">
             <div>
               <p className="page-section__eyebrow">Activity</p>
@@ -320,12 +331,15 @@ export default async function DashboardPage() {
           </div>
 
           {recentProjects.length === 0 ? (
-            <div className="surface-empty mt-6">
-              <h3 className="surface-empty__title">No projects yet</h3>
-              <p className="surface-empty__description">
-                Your recently updated work will appear here once projects start
-                moving through the pipeline.
-              </p>
+            <div className="mt-6">
+              <EmptyState
+                icon={Sparkles}
+                title="Let's create something"
+                description="Your recently updated work will appear here once projects start moving through the pipeline."
+                actionHref="/projects/new"
+                actionLabel="Create a project"
+                actionIcon={FolderKanban}
+              />
             </div>
           ) : (
             <div className="mt-6 grid gap-3 lg:grid-cols-2">
@@ -343,10 +357,10 @@ export default async function DashboardPage() {
                         <h3 className="truncate text-base font-semibold text-foreground">
                           {project.title}
                         </h3>
-                        <p className="mt-2 text-xs uppercase tracking-wide text-muted-foreground">
-                          {formatEnumLabel(project.status)} •{" "}
-                          {formatEnumLabel(project.contentType)}
-                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <StatusBadge status={project.status} />
+                          <span className="chip">{formatEnumLabel(project.contentType)}</span>
+                        </div>
                       </div>
 
                       <div className="shrink-0 text-right">

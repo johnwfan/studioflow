@@ -1,5 +1,9 @@
 import Link from "next/link";
+import { CalendarPlus2, Clock3 } from "lucide-react";
 
+import Breadcrumbs from "@/components/breadcrumbs";
+import EmptyState from "@/components/empty-state";
+import StatusBadge from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -96,6 +100,9 @@ export default async function CalendarPage() {
             <div className="page-header__body">
               <p className="page-header__eyebrow">Publishing Schedule</p>
               <h1 className="page-header__title">Calendar</h1>
+              <p className="page-header__description">
+                Keep upcoming publish windows visible so planning stays realistic.
+              </p>
             </div>
 
             <div className="page-header__actions">
@@ -106,18 +113,22 @@ export default async function CalendarPage() {
           </div>
         </header>
 
+        <Breadcrumbs
+          items={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Calendar" },
+          ]}
+        />
+
         {projectsByDay.length === 0 ? (
-          <section className="surface-empty">
-            <h2 className="surface-empty__title">No scheduled projects yet</h2>
-            <p className="surface-empty__description">
-              Projects with a publish date will appear here in chronological order.
-            </p>
-            <div className="mt-5">
-              <Button asChild size="lg">
-                <Link href="/projects/new">Create a scheduled project</Link>
-              </Button>
-            </div>
-          </section>
+          <EmptyState
+            icon={Clock3}
+            title="No scheduled projects yet"
+            description="Projects with a publish date will appear here in chronological order."
+            actionHref="/projects/new"
+            actionLabel="Create a scheduled project"
+            actionIcon={CalendarPlus2}
+          />
         ) : (
           <div className="space-y-6">
             {projectsByDay.map((group) => (
@@ -150,7 +161,7 @@ export default async function CalendarPage() {
                           </h3>
 
                           <div className="mt-3 flex flex-wrap gap-2">
-                            <span className="chip">{formatEnumLabel(project.status)}</span>
+                            <StatusBadge status={project.status} />
                             <span className="chip">
                               {formatEnumLabel(project.contentType)}
                             </span>

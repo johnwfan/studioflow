@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 
+import Breadcrumbs from "@/components/breadcrumbs";
 import SignOutAction from "@/components/sign-out-action";
 import ThemePicker from "@/components/theme-picker";
 import { Button } from "@/components/ui/button";
@@ -30,8 +31,18 @@ export default async function SettingsPage() {
           <div className="page-header__body">
             <p className="page-header__eyebrow">Workspace Settings</p>
             <h1 className="page-header__title">Settings</h1>
+            <p className="page-header__description">
+              Personalize your workspace look and keep account access close at hand.
+            </p>
           </div>
         </header>
+
+        <Breadcrumbs
+          items={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Settings" },
+          ]}
+        />
 
         <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
           <section className="page-section">
