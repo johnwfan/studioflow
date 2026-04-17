@@ -27,16 +27,17 @@ export default async function RootLayout({
   const storedTheme = cookieStore.get(themeCookieName)?.value;
   const initialTheme =
     storedTheme && isThemeId(storedTheme) ? storedTheme : defaultTheme;
+  const isDarkTheme = initialTheme === "noir";
 
   return (
     <ClerkProvider>
       <html
         lang="en"
-        className={[inter.variable, initialTheme === "dark" ? "dark" : ""]
+        className={[inter.variable, isDarkTheme ? "dark" : ""]
           .filter(Boolean)
           .join(" ")}
         data-theme={initialTheme}
-        style={{ colorScheme: initialTheme === "dark" ? "dark" : "light" }}
+        style={{ colorScheme: isDarkTheme ? "dark" : "light" }}
       >
         <body suppressHydrationWarning>
           <ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>

@@ -27,14 +27,22 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function applyTheme(theme: ThemeId) {
   const root = document.documentElement;
+  const body = document.body;
+  const isDarkTheme = theme === "noir";
 
-  root.dataset.theme = theme;
-  root.style.colorScheme = theme === "dark" ? "dark" : "light";
+  root.setAttribute("data-theme", theme);
+  body?.setAttribute("data-theme", theme);
+  root.style.colorScheme = isDarkTheme ? "dark" : "light";
+  if (body) {
+    body.style.colorScheme = isDarkTheme ? "dark" : "light";
+  }
 
-  if (theme === "dark") {
+  if (isDarkTheme) {
     root.classList.add("dark");
+    body?.classList.add("dark");
   } else {
     root.classList.remove("dark");
+    body?.classList.remove("dark");
   }
 }
 
@@ -61,6 +69,7 @@ export default function ThemeProvider({
   }, [theme]);
 
   const setTheme = (nextTheme: ThemeId) => {
+    applyTheme(nextTheme);
     setThemeState(nextTheme);
   };
 

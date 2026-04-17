@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { ArrowRight, CalendarDays, Columns3, FolderKanban, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, Columns3, FolderKanban } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,6 @@ export default async function HomePage() {
       <section className="landing-page__section">
         <header className="landing-page__nav">
           <Link href="/" className="landing-page__brand">
-            <span className="landing-page__brand-icon">
-              <Sparkles className="h-5 w-5" />
-            </span>
             <span>
               <span className="landing-page__brand-name">Studioflow</span>
               <span className="landing-page__brand-subtitle">creator workflow</span>
@@ -123,7 +120,7 @@ export default async function HomePage() {
                     </div>
                   </div>
 
-                  <div className="grid gap-4 md:grid-cols-3">
+                  <div className="grid gap-4 md:grid-cols-1 xl:grid-cols-3">
                     <div className="landing-page__preview-card">
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
@@ -137,11 +134,11 @@ export default async function HomePage() {
                     </div>
 
                     <div className="landing-page__preview-card">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
                           <Columns3 className="h-4 w-4" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-sm font-semibold text-foreground">Workflow</p>
                           <p className="text-sm text-muted-foreground">
                             Ideas to published at a glance
@@ -151,11 +148,11 @@ export default async function HomePage() {
                     </div>
 
                     <div className="landing-page__preview-card">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
                           <CalendarDays className="h-4 w-4" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-sm font-semibold text-foreground">Calendar</p>
                           <p className="text-sm text-muted-foreground">
                             Publishing plans stay visible
