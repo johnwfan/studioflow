@@ -12,7 +12,7 @@ function getDisplayName(name: string | null | undefined, email: string | undefin
     return name;
   }
 
-  return email ?? "Studioflow User";
+  return email ?? "studioflow User";
 }
 
 export default async function SettingsPage() {
@@ -67,7 +67,7 @@ export default async function SettingsPage() {
                   {primaryEmail ?? "No email available"}
                 </p>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  Your account is handled by Clerk, and Studioflow uses that
+                  Your account is handled by Clerk, and studioflow uses that
                   identity to protect your workspace data.
                 </p>
               </div>

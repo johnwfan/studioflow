@@ -55,7 +55,7 @@ export default function Sidebar() {
           <Link href="/dashboard" className="sidebar__brand-link">
             <div>
               <p className="sidebar__brand-name">
-                Studioflow
+                <span className="brand-first-letter">s</span>tudioflow
               </p>
               <p className="sidebar__brand-subtitle">
                 creator workflow

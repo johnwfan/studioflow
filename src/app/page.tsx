@@ -13,7 +13,7 @@ export default async function HomePage() {
         <header className="landing-page__nav">
           <Link href="/" className="landing-page__brand">
             <span>
-              <span className="landing-page__brand-name">Studioflow</span>
+              <span className="landing-page__brand-name"><span className="brand-first-letter">s</span>tudioflow</span>
               <span className="landing-page__brand-subtitle">creator workflow</span>
             </span>
           </Link>

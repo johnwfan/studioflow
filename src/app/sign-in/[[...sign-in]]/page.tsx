@@ -10,7 +10,7 @@ export default function SignInPage() {
               Welcome back
             </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
-              Sign in to Studioflow
+              Sign in to studioflow
             </h1>
             <p className="mt-4 text-sm leading-7 text-zinc-600 sm:text-base">
               Jump back into your creator workspace, review your pipeline, and

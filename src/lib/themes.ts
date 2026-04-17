@@ -4,7 +4,7 @@ export const themes = [
   {
     id: "standard",
     label: "Standard",
-    description: "Studioflow core: indigo structure, platinum surfaces, red highlights.",
+    description: "studioflow core: indigo structure, platinum surfaces, red highlights.",
     preview: ["#2b2d42", "#8d99ae", "#edf2f4", "#ef233c"],
   },
   {

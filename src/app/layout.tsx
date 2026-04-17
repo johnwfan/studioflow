@@ -14,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Studioflow",
+  title: "studioflow",
   description: "A creator workflow platform",
 };
 

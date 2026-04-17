@@ -10,7 +10,7 @@ export default function SignUpPage() {
               Get started
             </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
-              Create your Studioflow account
+              Create your studioflow account
             </h1>
             <p className="mt-4 text-sm leading-7 text-zinc-600 sm:text-base">
               Set up a clean workspace for ideas, production planning, tasks,

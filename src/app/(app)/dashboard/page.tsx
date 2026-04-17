@@ -4,6 +4,7 @@ import { CalendarClock, CheckCheck, FolderKanban, Sparkles } from "lucide-react"
 import Breadcrumbs from "@/components/breadcrumbs";
 import EmptyState from "@/components/empty-state";
 import StatusBadge from "@/components/status-badge";
+import { TaskItem } from "@/components/task-item";
 import { Button } from "@/components/ui/button";
 import { requireUserId } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -303,16 +304,14 @@ export default async function DashboardPage() {
             ) : (
               <div className="mt-6 space-y-3">
                 {taskPreview.map((task) => (
-                  <Link
+                  <TaskItem
                     key={task.id}
-                    href={`/projects/${task.project.id}`}
-                    className="list-card block"
-                  >
-                    <p className="text-sm font-semibold text-foreground">{task.text}</p>
-                    <p className="mt-2 text-xs uppercase tracking-wide text-muted-foreground">
-                      {task.project.title}
-                    </p>
-                  </Link>
+                    id={task.id}
+                    text={task.text}
+                    completed={task.completed}
+                    projectId={task.project.id}
+                    projectTitle={task.project.title}
+                  />
                 ))}
               </div>
             )}
