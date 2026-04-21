@@ -216,26 +216,27 @@ Then open:
 
 ## Screenshots
 
-Add screenshots here once the UI is in its polished state.
+### Landing Page
+<img width="1470" height="811" alt="image" src="https://github.com/user-attachments/assets/5931d3a3-39f8-43af-9b0c-206c86bd4013" />
 
-Suggested sections:
+### Dashboard
+<img width="1470" height="811" alt="image" src="https://github.com/user-attachments/assets/bd969da0-845c-4834-af6d-df62c0fcec4b" />
 
-- landing page
-- dashboard
-- projects
-- workflow board
-- calendar
-- theme picker
+### Projects
+<img width="1470" height="811" alt="image" src="https://github.com/user-attachments/assets/dc37c560-69be-47a2-bb4e-7a030e3a81f7" />
 
-Example:
+### Workflow
+<img width="1470" height="811" alt="image" src="https://github.com/user-attachments/assets/78a56b24-517b-40c2-9296-80470ba0cf36" />
 
-    ## Screenshots
-    
-    ### Dashboard
-    ![Dashboard](./public/screenshots/dashboard.png)
-    
-    ### Workflow
-    ![Workflow](./public/screenshots/workflow.png)
+### Calendar
+<img width="1470" height="811" alt="image" src="https://github.com/user-attachments/assets/b1fca1fe-d9a4-44cb-8fab-d797aadf4400" />
+
+### Themes
+<img width="1126" height="770" alt="image" src="https://github.com/user-attachments/assets/fdb84c07-f588-44b8-a8b4-122a0eae82e9" />
+
+
+
+
 
 ## Roadmap
 
