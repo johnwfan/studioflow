@@ -3,6 +3,7 @@
 StudioFlow is a full-stack workflow platform for creators and small production teams to plan, track, and organize content from idea to publish.
 
 The app is built around a simple but practical production pipeline: create projects, assign them a content type, move them through workflow stages, attach notes and links, track associated tasks, and keep scheduled work visible in one place.
+<img width="1470" height="811" alt="image" src="https://github.com/user-attachments/assets/5931d3a3-39f8-43af-9b0c-206c86bd4013" />
 
 ## Why I built this
 
@@ -215,9 +216,6 @@ Then open:
     npm run lint     # run ESLint
 
 ## Screenshots
-
-### Landing Page
-<img width="1470" height="811" alt="image" src="https://github.com/user-attachments/assets/5931d3a3-39f8-43af-9b0c-206c86bd4013" />
 
 ### Dashboard
 <img width="1470" height="811" alt="image" src="https://github.com/user-attachments/assets/bd969da0-845c-4834-af6d-df62c0fcec4b" />
