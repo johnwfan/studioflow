@@ -136,11 +136,6 @@ export default async function DashboardPage() {
       value: scheduledProjects.length,
       description: "Projects with a publish date on the calendar.",
     },
-    {
-      label: "Published",
-      value: publishedProjects.length,
-      description: "Projects already marked as shipped.",
-    },
   ];
 
   return (

@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Project: 'Project',
   Task: 'Task',
-  AssetLink: 'AssetLink'
+  AssetLink: 'AssetLink',
+  Note: 'Note'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -76,7 +77,6 @@ export const ProjectScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
-  notes: 'notes',
   status: 'status',
   contentType: 'contentType',
   publishDate: 'publishDate',
@@ -108,6 +108,18 @@ export const AssetLinkScalarFieldEnum = {
 } as const
 
 export type AssetLinkScalarFieldEnum = (typeof AssetLinkScalarFieldEnum)[keyof typeof AssetLinkScalarFieldEnum]
+
+
+export const NoteScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  body: 'body',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  projectId: 'projectId'
+} as const
+
+export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
 
 
 export const SortOrder = {

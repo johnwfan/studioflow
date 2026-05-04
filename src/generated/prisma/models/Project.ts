@@ -28,7 +28,6 @@ export type ProjectMinAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  notes: string | null
   status: $Enums.ProjectStatus | null
   contentType: $Enums.ContentType | null
   publishDate: Date | null
@@ -41,7 +40,6 @@ export type ProjectMaxAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  notes: string | null
   status: $Enums.ProjectStatus | null
   contentType: $Enums.ContentType | null
   publishDate: Date | null
@@ -54,7 +52,6 @@ export type ProjectCountAggregateOutputType = {
   id: number
   title: number
   description: number
-  notes: number
   status: number
   contentType: number
   publishDate: number
@@ -69,7 +66,6 @@ export type ProjectMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  notes?: true
   status?: true
   contentType?: true
   publishDate?: true
@@ -82,7 +78,6 @@ export type ProjectMaxAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  notes?: true
   status?: true
   contentType?: true
   publishDate?: true
@@ -95,7 +90,6 @@ export type ProjectCountAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  notes?: true
   status?: true
   contentType?: true
   publishDate?: true
@@ -181,7 +175,6 @@ export type ProjectGroupByOutputType = {
   id: string
   title: string
   description: string | null
-  notes: string | null
   status: $Enums.ProjectStatus
   contentType: $Enums.ContentType
   publishDate: Date | null
@@ -215,13 +208,13 @@ export type ProjectWhereInput = {
   id?: Prisma.StringFilter<"Project"> | string
   title?: Prisma.StringFilter<"Project"> | string
   description?: Prisma.StringNullableFilter<"Project"> | string | null
-  notes?: Prisma.StringNullableFilter<"Project"> | string | null
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeFilter<"Project"> | $Enums.ContentType
   publishDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   userId?: Prisma.StringFilter<"Project"> | string
+  notes?: Prisma.NoteListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   assetLinks?: Prisma.AssetLinkListRelationFilter
 }
@@ -230,13 +223,13 @@ export type ProjectOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  notes?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   contentType?: Prisma.SortOrder
   publishDate?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  notes?: Prisma.NoteOrderByRelationAggregateInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
   assetLinks?: Prisma.AssetLinkOrderByRelationAggregateInput
 }
@@ -248,13 +241,13 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   title?: Prisma.StringFilter<"Project"> | string
   description?: Prisma.StringNullableFilter<"Project"> | string | null
-  notes?: Prisma.StringNullableFilter<"Project"> | string | null
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeFilter<"Project"> | $Enums.ContentType
   publishDate?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   userId?: Prisma.StringFilter<"Project"> | string
+  notes?: Prisma.NoteListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   assetLinks?: Prisma.AssetLinkListRelationFilter
 }, "id">
@@ -263,7 +256,6 @@ export type ProjectOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  notes?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   contentType?: Prisma.SortOrder
   publishDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -282,7 +274,6 @@ export type ProjectScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Project"> | string
   title?: Prisma.StringWithAggregatesFilter<"Project"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
-  notes?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   status?: Prisma.EnumProjectStatusWithAggregatesFilter<"Project"> | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeWithAggregatesFilter<"Project"> | $Enums.ContentType
   publishDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
@@ -295,13 +286,13 @@ export type ProjectCreateInput = {
   id?: string
   title: string
   description?: string | null
-  notes?: string | null
   status?: $Enums.ProjectStatus
   contentType?: $Enums.ContentType
   publishDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  notes?: Prisma.NoteCreateNestedManyWithoutProjectInput
   tasks?: Prisma.TaskCreateNestedManyWithoutProjectInput
   assetLinks?: Prisma.AssetLinkCreateNestedManyWithoutProjectInput
 }
@@ -310,13 +301,13 @@ export type ProjectUncheckedCreateInput = {
   id?: string
   title: string
   description?: string | null
-  notes?: string | null
   status?: $Enums.ProjectStatus
   contentType?: $Enums.ContentType
   publishDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutProjectInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutProjectInput
   assetLinks?: Prisma.AssetLinkUncheckedCreateNestedManyWithoutProjectInput
 }
@@ -325,13 +316,13 @@ export type ProjectUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
   publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NoteUpdateManyWithoutProjectNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutProjectNestedInput
   assetLinks?: Prisma.AssetLinkUpdateManyWithoutProjectNestedInput
 }
@@ -340,13 +331,13 @@ export type ProjectUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
   publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutProjectNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutProjectNestedInput
   assetLinks?: Prisma.AssetLinkUncheckedUpdateManyWithoutProjectNestedInput
 }
@@ -355,7 +346,6 @@ export type ProjectCreateManyInput = {
   id?: string
   title: string
   description?: string | null
-  notes?: string | null
   status?: $Enums.ProjectStatus
   contentType?: $Enums.ContentType
   publishDate?: Date | string | null
@@ -368,7 +358,6 @@ export type ProjectUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
   publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -381,7 +370,6 @@ export type ProjectUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
   publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -394,7 +382,6 @@ export type ProjectCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  notes?: Prisma.SortOrder
   status?: Prisma.SortOrder
   contentType?: Prisma.SortOrder
   publishDate?: Prisma.SortOrder
@@ -407,7 +394,6 @@ export type ProjectMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  notes?: Prisma.SortOrder
   status?: Prisma.SortOrder
   contentType?: Prisma.SortOrder
   publishDate?: Prisma.SortOrder
@@ -420,7 +406,6 @@ export type ProjectMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  notes?: Prisma.SortOrder
   status?: Prisma.SortOrder
   contentType?: Prisma.SortOrder
   publishDate?: Prisma.SortOrder
@@ -486,17 +471,31 @@ export type ProjectUpdateOneRequiredWithoutAssetLinksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutAssetLinksInput, Prisma.ProjectUpdateWithoutAssetLinksInput>, Prisma.ProjectUncheckedUpdateWithoutAssetLinksInput>
 }
 
+export type ProjectCreateNestedOneWithoutNotesInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutNotesInput, Prisma.ProjectUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutNotesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutNotesInput, Prisma.ProjectUncheckedCreateWithoutNotesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutNotesInput
+  upsert?: Prisma.ProjectUpsertWithoutNotesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutNotesInput, Prisma.ProjectUpdateWithoutNotesInput>, Prisma.ProjectUncheckedUpdateWithoutNotesInput>
+}
+
 export type ProjectCreateWithoutTasksInput = {
   id?: string
   title: string
   description?: string | null
-  notes?: string | null
   status?: $Enums.ProjectStatus
   contentType?: $Enums.ContentType
   publishDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  notes?: Prisma.NoteCreateNestedManyWithoutProjectInput
   assetLinks?: Prisma.AssetLinkCreateNestedManyWithoutProjectInput
 }
 
@@ -504,13 +503,13 @@ export type ProjectUncheckedCreateWithoutTasksInput = {
   id?: string
   title: string
   description?: string | null
-  notes?: string | null
   status?: $Enums.ProjectStatus
   contentType?: $Enums.ContentType
   publishDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutProjectInput
   assetLinks?: Prisma.AssetLinkUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -534,13 +533,13 @@ export type ProjectUpdateWithoutTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
   publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NoteUpdateManyWithoutProjectNestedInput
   assetLinks?: Prisma.AssetLinkUpdateManyWithoutProjectNestedInput
 }
 
@@ -548,13 +547,13 @@ export type ProjectUncheckedUpdateWithoutTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
   publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutProjectNestedInput
   assetLinks?: Prisma.AssetLinkUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -562,13 +561,13 @@ export type ProjectCreateWithoutAssetLinksInput = {
   id?: string
   title: string
   description?: string | null
-  notes?: string | null
   status?: $Enums.ProjectStatus
   contentType?: $Enums.ContentType
   publishDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  notes?: Prisma.NoteCreateNestedManyWithoutProjectInput
   tasks?: Prisma.TaskCreateNestedManyWithoutProjectInput
 }
 
@@ -576,13 +575,13 @@ export type ProjectUncheckedCreateWithoutAssetLinksInput = {
   id?: string
   title: string
   description?: string | null
-  notes?: string | null
   status?: $Enums.ProjectStatus
   contentType?: $Enums.ContentType
   publishDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutProjectInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -606,13 +605,13 @@ export type ProjectUpdateWithoutAssetLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
   publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NoteUpdateManyWithoutProjectNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutProjectNestedInput
 }
 
@@ -620,7 +619,78 @@ export type ProjectUncheckedUpdateWithoutAssetLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
+  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutProjectNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutNotesInput = {
+  id?: string
+  title: string
+  description?: string | null
+  status?: $Enums.ProjectStatus
+  contentType?: $Enums.ContentType
+  publishDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+  tasks?: Prisma.TaskCreateNestedManyWithoutProjectInput
+  assetLinks?: Prisma.AssetLinkCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutNotesInput = {
+  id?: string
+  title: string
+  description?: string | null
+  status?: $Enums.ProjectStatus
+  contentType?: $Enums.ContentType
+  publishDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutProjectInput
+  assetLinks?: Prisma.AssetLinkUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutNotesInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutNotesInput, Prisma.ProjectUncheckedCreateWithoutNotesInput>
+}
+
+export type ProjectUpsertWithoutNotesInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutNotesInput, Prisma.ProjectUncheckedUpdateWithoutNotesInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutNotesInput, Prisma.ProjectUncheckedCreateWithoutNotesInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutNotesInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutNotesInput, Prisma.ProjectUncheckedUpdateWithoutNotesInput>
+}
+
+export type ProjectUpdateWithoutNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
+  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  tasks?: Prisma.TaskUpdateManyWithoutProjectNestedInput
+  assetLinks?: Prisma.AssetLinkUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
   publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -628,6 +698,7 @@ export type ProjectUncheckedUpdateWithoutAssetLinksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutProjectNestedInput
+  assetLinks?: Prisma.AssetLinkUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 
@@ -636,11 +707,13 @@ export type ProjectUncheckedUpdateWithoutAssetLinksInput = {
  */
 
 export type ProjectCountOutputType = {
+  notes: number
   tasks: number
   assetLinks: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  notes?: boolean | ProjectCountOutputTypeCountNotesArgs
   tasks?: boolean | ProjectCountOutputTypeCountTasksArgs
   assetLinks?: boolean | ProjectCountOutputTypeCountAssetLinksArgs
 }
@@ -653,6 +726,13 @@ export type ProjectCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
    * Select specific fields to fetch from the ProjectCountOutputType
    */
   select?: Prisma.ProjectCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NoteWhereInput
 }
 
 /**
@@ -674,13 +754,13 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   title?: boolean
   description?: boolean
-  notes?: boolean
   status?: boolean
   contentType?: boolean
   publishDate?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
+  notes?: boolean | Prisma.Project$notesArgs<ExtArgs>
   tasks?: boolean | Prisma.Project$tasksArgs<ExtArgs>
   assetLinks?: boolean | Prisma.Project$assetLinksArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -690,7 +770,6 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   title?: boolean
   description?: boolean
-  notes?: boolean
   status?: boolean
   contentType?: boolean
   publishDate?: boolean
@@ -703,7 +782,6 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   title?: boolean
   description?: boolean
-  notes?: boolean
   status?: boolean
   contentType?: boolean
   publishDate?: boolean
@@ -716,7 +794,6 @@ export type ProjectSelectScalar = {
   id?: boolean
   title?: boolean
   description?: boolean
-  notes?: boolean
   status?: boolean
   contentType?: boolean
   publishDate?: boolean
@@ -725,8 +802,9 @@ export type ProjectSelectScalar = {
   userId?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "notes" | "status" | "contentType" | "publishDate" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "status" | "contentType" | "publishDate" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  notes?: boolean | Prisma.Project$notesArgs<ExtArgs>
   tasks?: boolean | Prisma.Project$tasksArgs<ExtArgs>
   assetLinks?: boolean | Prisma.Project$assetLinksArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -737,6 +815,7 @@ export type ProjectIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Project"
   objects: {
+    notes: Prisma.$NotePayload<ExtArgs>[]
     tasks: Prisma.$TaskPayload<ExtArgs>[]
     assetLinks: Prisma.$AssetLinkPayload<ExtArgs>[]
   }
@@ -744,7 +823,6 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     title: string
     description: string | null
-    notes: string | null
     status: $Enums.ProjectStatus
     contentType: $Enums.ContentType
     publishDate: Date | null
@@ -1145,6 +1223,7 @@ readonly fields: ProjectFieldRefs;
  */
 export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  notes<T extends Prisma.Project$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tasks<T extends Prisma.Project$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assetLinks<T extends Prisma.Project$assetLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$assetLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1179,7 +1258,6 @@ export interface ProjectFieldRefs {
   readonly id: Prisma.FieldRef<"Project", 'String'>
   readonly title: Prisma.FieldRef<"Project", 'String'>
   readonly description: Prisma.FieldRef<"Project", 'String'>
-  readonly notes: Prisma.FieldRef<"Project", 'String'>
   readonly status: Prisma.FieldRef<"Project", 'ProjectStatus'>
   readonly contentType: Prisma.FieldRef<"Project", 'ContentType'>
   readonly publishDate: Prisma.FieldRef<"Project", 'DateTime'>
@@ -1576,6 +1654,30 @@ export type ProjectDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Projects to delete.
    */
   limit?: number
+}
+
+/**
+ * Project.notes
+ */
+export type Project$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Note
+   */
+  select?: Prisma.NoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Note
+   */
+  omit?: Prisma.NoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NoteInclude<ExtArgs> | null
+  where?: Prisma.NoteWhereInput
+  orderBy?: Prisma.NoteOrderByWithRelationInput | Prisma.NoteOrderByWithRelationInput[]
+  cursor?: Prisma.NoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NoteScalarFieldEnum | Prisma.NoteScalarFieldEnum[]
 }
 
 /**

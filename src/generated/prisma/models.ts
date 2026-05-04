@@ -11,4 +11,5 @@
 export type * from './models/Project'
 export type * from './models/Task'
 export type * from './models/AssetLink'
+export type * from './models/Note'
 export type * from './commonInputTypes'

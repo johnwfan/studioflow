@@ -32,3 +32,8 @@ export type Task = Prisma.TaskModel
  * 
  */
 export type AssetLink = Prisma.AssetLinkModel
+/**
+ * Model Note
+ * 
+ */
+export type Note = Prisma.NoteModel

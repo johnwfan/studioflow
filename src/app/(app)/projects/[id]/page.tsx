@@ -5,6 +5,7 @@ import { Link2, ListTodo, PenSquare } from "lucide-react";
 
 import Breadcrumbs from "@/components/breadcrumbs";
 import EmptyState from "@/components/empty-state";
+import ProjectNotesList from "@/components/project-notes-list";
 import StatusBadge from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import SubmitButton from "@/components/ui/submit-button";
@@ -85,6 +86,11 @@ export default async function ProjectDetailPage({
       assetLinks: {
         orderBy: {
           createdAt: "desc",
+        },
+      },
+      notes: {
+        orderBy: {
+          updatedAt: "desc",
         },
       },
     },
@@ -250,6 +256,45 @@ export default async function ProjectDetailPage({
     revalidatePath(`/projects/${id}`);
   }
 
+  async function createNote(formData: FormData) {
+    "use server";
+
+    const currentUserId = await requireUserId();
+    const title = formData.get("title");
+    const body = formData.get("body");
+
+    const trimmedTitle = typeof title === "string" ? title.trim() : "";
+    const trimmedBody = typeof body === "string" ? body.trim() : "";
+
+    if (!trimmedTitle || !trimmedBody) {
+      return;
+    }
+
+    const ownedProject = await prisma.project.findFirst({
+      where: {
+        id,
+        userId: currentUserId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!ownedProject) {
+      notFound();
+    }
+
+    await prisma.note.create({
+      data: {
+        title: trimmedTitle,
+        body: trimmedBody,
+        projectId: ownedProject.id,
+      },
+    });
+
+    revalidatePath(`/projects/${id}`);
+  }
+
   async function deleteAssetLink(formData: FormData) {
     "use server";
 
@@ -280,6 +325,87 @@ export default async function ProjectDetailPage({
     await prisma.assetLink.delete({
       where: {
         id: ownedAssetLink.id,
+      },
+    });
+
+    revalidatePath(`/projects/${id}`);
+  }
+
+  async function deleteNote(formData: FormData) {
+    "use server";
+
+    const currentUserId = await requireUserId();
+    const noteId = formData.get("noteId");
+
+    if (typeof noteId !== "string") {
+      return;
+    }
+
+    const ownedNote = await prisma.note.findFirst({
+      where: {
+        id: noteId,
+        project: {
+          id,
+          userId: currentUserId,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!ownedNote) {
+      notFound();
+    }
+
+    await prisma.note.delete({
+      where: {
+        id: ownedNote.id,
+      },
+    });
+
+    revalidatePath(`/projects/${id}`);
+  }
+
+  async function updateNote(formData: FormData) {
+    "use server";
+
+    const currentUserId = await requireUserId();
+    const noteId = formData.get("noteId");
+    const title = formData.get("title");
+    const body = formData.get("body");
+
+    const trimmedTitle = typeof title === "string" ? title.trim() : "";
+    const trimmedBody = typeof body === "string" ? body.trim() : "";
+
+    if (typeof noteId !== "string" || !trimmedTitle || !trimmedBody) {
+      return;
+    }
+
+    const ownedNote = await prisma.note.findFirst({
+      where: {
+        id: noteId,
+        project: {
+          id,
+          userId: currentUserId,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!ownedNote) {
+      notFound();
+    }
+
+    await prisma.note.update({
+      where: {
+        id: ownedNote.id,
+      },
+      data: {
+        title: trimmedTitle,
+        body: trimmedBody,
       },
     });
 
@@ -361,7 +487,7 @@ export default async function ProjectDetailPage({
                 <span className="chip">{formatEnumLabel(project.contentType)}</span>
               </div>
 
-              <div className="mt-6 grid gap-6 lg:grid-cols-2">
+              <div className="mt-6 space-y-6">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Description</p>
                   <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-foreground">
@@ -371,9 +497,29 @@ export default async function ProjectDetailPage({
 
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Notes</p>
-                  <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-foreground">
-                    {project.notes || "No notes yet."}
-                  </p>
+                  <form action={createNote} className="mt-3 space-y-3">
+                    <input
+                      name="title"
+                      type="text"
+                      required
+                      placeholder="Note title"
+                      className="ui-input"
+                    />
+                    <textarea
+                      name="body"
+                      required
+                      placeholder="Write a project note..."
+                      className="ui-input min-h-28 resize-y"
+                    />
+                    <SubmitButton size="sm" pendingLabel="Adding note...">
+                      New Note
+                    </SubmitButton>
+                  </form>
+                  <ProjectNotesList
+                    notes={project.notes}
+                    deleteNote={deleteNote}
+                    updateNote={updateNote}
+                  />
                 </div>
               </div>
             </section>
